@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+        >
+    <RelativeLayout
+            android:id="@+id/mainLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+        <ImageView
+                android:scaleType="centerCrop"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/topbkimg"
+                android:id="@+id/imageView"/>
+        <ImageButton android:layout_width="wrap_content"
+                     android:layout_height="match_parent"
+                     android:layout_centerVertical="true"
+                     android:src="@drawable/ic_drawer"
+                     android:paddingLeft="13dp"
+                     android:background="@android:color/transparent"
+                     android:id="@+id/bt_openmenu"
+                />
+        <TextView
+                android:id="@+id/titlename"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:background="@android:color/transparent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:id="@+id/right_button"
+                android:paddingRight="15dp"
+                android:layout_alignParentRight="true"
+                />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textColor="#ffffff"
+                android:id="@+id/buttontextView"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_alignRight="@+id/right_button"
+                android:layout_alignTop="@+id/right_button"
+                android:layout_alignBottom="@+id/right_button"
+                android:layout_alignLeft="@+id/right_button"/>
+    </RelativeLayout>
+    <com.handmark.pulltorefresh.library.PullToRefreshWebView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/webView"
+            />
+</LinearLayout>
+

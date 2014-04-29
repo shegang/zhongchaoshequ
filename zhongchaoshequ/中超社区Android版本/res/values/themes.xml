@@ -1,0 +1,35 @@
+<resources>
+
+    <style name="SampleBase" parent="@android:style/Theme.Light" />
+
+    <style name="SampleTheme" parent="SampleBase">
+        <item name="menuDrawerStyle">@style/MenuDrawerStyle</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/AnimationActivity</item>
+
+    </style>
+    <style name="AnimationActivity" parent="@android:style/Animation.Activity" mce_bogus="1">
+        <item name="android:activityOpenEnterAnimation">@anim/in_from_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/out_to_left</item>
+
+        <item name="android:activityCloseEnterAnimation">@anim/out_form_right</item>
+        <item name="android:activityCloseExitAnimation">@anim/out_form_left</item>
+    </style>
+    <style name="SampleTheme.RightDrawer" parent="SampleBase">
+
+        <item name="menuDrawerStyle">@style/MenuDrawerStyle.Right</item>
+    </style>
+
+    <style name="SampleTheme.TopDrawer" parent="SampleBase">
+        <item name="menuDrawerStyle">@style/MenuDrawerStyle.Top</item>
+    </style>
+
+    <style name="SampleTheme.BottomDrawer" parent="SampleBase">
+        <item name="menuDrawerStyle">@style/MenuDrawerStyle.Bottom</item>
+    </style>
+
+    <style name="SampleTheme.Sherlock" parent="Theme.Sherlock.Light.DarkActionBar">
+        <item name="menuDrawerStyle">@style/MenuDrawerStyle</item>
+    </style>
+
+</resources>

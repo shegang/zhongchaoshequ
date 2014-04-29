@@ -1,0 +1,7 @@
+int id content_container 0x7f030004
+int id grid 0x7f030003
+int id grid_container 0x7f030002
+int id progress_container 0x7f030000
+int id progress_text 0x7f030001
+int layout fragment_grid 0x7f020000
+int layout fragment_progress 0x7f020001

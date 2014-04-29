@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">中超社区</string>
+    <string name="loading">亲，正在努力加载哦！</string>
+    <string name="BaseIP">http://marsxserver.xicp.net/</string>
+    <string name="MainIP">http://marsxserver.xicp.net/webpage/</string>
+    <string name="MainView">http://marsxserver.xicp.net/webpage/index.aspx</string>
+    <string name="jingcai_view">http://marsxserver.xicp.net/webpage/Guess.aspx</string>
+    <string name="qiudui_view">http://marsxserver.xicp.net/webpage/CampList.aspx</string>
+    <string name="qiuxingka_view">http://marsxserver.xicp.net/webpage/Shake.aspx</string>
+    <string name="gerenzhongxin_view">http://marsxserver.xicp.net/webpage/PageUserInfoData.aspx</string>
+    <string name="guanyuwomen_view">http://marsxserver.xicp.net/webpage/AboutUs.aspx</string>
+    <string name="GuessWinLost_view">http://marsxserver.xicp.net/webpage/GuessWinLost.aspx</string>
+    <string name="newPlace">http://marsxserver.xicp.net/webpage/NewPlace.aspx</string>
+    <string name="ChoosePlace">http://marsxserver.xicp.net/webpage/ChoosePlace.aspx</string>
+    <string name="Record">http://marsxserver.xicp.net/webpage/Record.aspx</string>
+
+
+    <string name="denglu_view">http://marsxserver.xicp.net/webpage/Login.aspx</string>
+
+    <string name="guanlizhanghao_view">http://marsxserver.xicp.net/webpage/AccountManager.aspx</string>
+    <string name="paihangbang_view">http://marsxserver.xicp.net/webpage/GoldRankPage.aspx</string>
+
+
+    <string name="userlocaldata">userlocaldata</string>
+    <string name="serverurl">http://marsxserver.xicp.net/WebService.asmx</string>
+
+    <string name="maintitle">中超资讯</string>
+    <string name="jingcaititle">中超竞猜</string>
+    <string name="quiduititle">中超球队</string>
+    <string name="qiuxingkatitle">摇球星卡</string>
+    <string name="gerenzhongxintitle">个人中心</string>
+    <string name="guanyuwomentitle">关于我们</string>
+
+    <string name="errormesg1">用户不存在</string>
+    <string name="errormesg2">密码错误</string>
+    <string name="errormesg3">此邮箱已经存在</string>
+    <string name="errormesg4">用户昵称重复</string>
+    <string name="errormesg5">系统错误</string>
+    <string name="errormesg6">邮箱错误不符合规则</string>
+    <string name="errormesg7">用户昵称不符合规则</string>
+
+
+    <string name="title1"></string>
+    <string name="title2">个人资料</string>
+    <string name="title3">中超竞猜</string>
+    <string name="title4">中超球队</string>
+    <string name="title5">摇球星卡</string>
+    <string name="title6">兑换奖品</string>
+    <string name="title7">兑换详细</string>
+    <string name="title8">球员信息</string>
+    <string name="title9">奖品兑换</string>
+    <string name="title10">送货时间</string>
+    <string name="title11">地址选择</string>
+    <string name="title12">新增地址</string>
+    <string name="title13">修改地址</string>
+    <string name="title14">个人中心</string>
+    <string name="title15">评论管理</string>
+    <string name="title16">修改密码</string>
+    <string name="title17">登陆</string>
+    <string name="title18">用户注册</string>
+    <string name="title19">兑换记录</string>
+    <string name="title20">账号管理</string>
+    <string name="title21">我的球星卡</string>
+    <string name="title22">我的订单</string>
+    <string name="title23">我的消息</string>
+    <string name="title24">关于我们</string>
+    <string name="title25">软件推荐</string>
+    <string name="title26">财富榜</string>
+    <string name="title27">忘记密码</string>
+
+    <string name="string1">兑换记录</string>
+    <string name="string2">财富榜</string>
+    <string name="string3">0评论</string>
+    <string name="string4">新增</string>
+    <string name="string5">确定</string>
+    <string name="string6">管理</string>
+    <string name="string7">完成</string>
+</resources>

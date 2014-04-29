@@ -1,0 +1,37 @@
+# view AndroidManifest.xml #generated:18
+-keep class com.gotye.sdk.MainActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:29
+-keep class com.gotye.sdk.ui.activities.GotyeMessageActivity { <init>(...); }
+
+# view res/layout/gotye_fragment_msgbox.xml #generated:8
+-keep class com.gotye.sdk.ui.view.expandlistview.GotyeExpandableListView { <init>(...); }
+
+# view res/layout/gotye_adapter_icon.xml #generated:8
+# view res/layout/gotye_adapter_room_list.xml #generated:12
+# view res/layout/gotye_adapter_room_list.xml #generated:91
+# view res/layout/gotye_adapter_room_list_nn.xml #generated:17
+# view res/layout/gotye_adapter_room_list_nn.xml #generated:96
+# view res/layout/gotye_dialog_userinfo.xml #generated:17
+# view res/layout/gotye_message_mode_image.xml #generated:8
+# view res/layout/gotye_message_mode_image_right.xml #generated:12
+# view res/layout/gotye_message_mode_multi.xml #generated:8
+# view res/layout/gotye_message_mode_text.xml #generated:8
+# view res/layout/gotye_message_mode_text_right.xml #generated:12
+# view res/layout/gotye_message_mode_voice.xml #generated:8
+# view res/layout/gotye_message_mode_voice_right.xml #generated:12
+-keep class com.gotye.sdk.ui.view.imageview.AsycImageView { <init>(...); }
+
+# view res/layout/gotye_activity_main.xml #generated:16
+-keep class com.gotye.sdk.ui.view.tab.GotyeTabHost { <init>(...); }
+
+# view res/layout/gotye_activity_main.xml #generated:9
+-keep class com.gotye.sdk.ui.view.viewpagger.GotyeViewPager { <init>(...); }
+
+# view res/layout/gotye_pop_user_list.xml #generated:113
+-keep class com.handmark.pulltorefresh.library.GotyePullToRefreshScrollView { <init>(...); }
+
+# view res/layout/gotye_activity_chat.xml #generated:8
+# view res/layout/gotye_fragment_room.xml #generated:50
+-keep class com.handmark.pulltorefresh.library.PullToRefreshListView { <init>(...); }
+
