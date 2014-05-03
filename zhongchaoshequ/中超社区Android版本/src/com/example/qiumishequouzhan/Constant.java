@@ -11,7 +11,7 @@ public class Constant {
 
     public static final Boolean DEBUG_MODE = true;
 
-    //   public static final String SERVER_URL = "http://192.168.0.201";
+//       public static final String SERVER_URL = "http://192.168.0.201";
 //    public static final String SERVER_URL = "http://s1.wisports.cn:8095";
     public static final String SERVER_URL = "http://marsxserver.xicp.net";
 

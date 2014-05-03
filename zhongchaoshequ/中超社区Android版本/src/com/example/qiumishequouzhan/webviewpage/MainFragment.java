@@ -5,10 +5,19 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import com.devspark.progressfragment.ProgressFragment;
+import com.example.qiumishequouzhan.LocalDataObj;
+import com.example.qiumishequouzhan.R;
+import com.example.qiumishequouzhan.Utils.*;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +35,8 @@ public class MainFragment extends FragmentActivity {
 
     public static MainFragment obj;
     public static Fragment fragment;
+    public String sUrl;
+    public int messagecount;
 
     public static MainFragment GetInstance() {
         return obj;
@@ -49,13 +60,13 @@ public class MainFragment extends FragmentActivity {
             // String counts = getIntent().getStringExtra("SchEvalCount");
             switch (fragmentId) {
                 case FRAGMENT_ONEPAGEWEBVIEW: {
-                    String sUrl = getIntent().getStringExtra(EXTRA_VIEW_URL);
+                    sUrl = getIntent().getStringExtra(EXTRA_VIEW_URL);
                     fragment = OneWebPageView.newInstance();
-                    ((OneWebPageView)fragment).SetWebViewUrl(sUrl);
-//                    OneWebPageView.SetWebViewUrl(sUrl);
+//                    ((OneWebPageView)fragment).SetWebViewUrl(sUrl);
+                    OneWebPageView.SetWebViewUrl(sUrl);
                     if (sTitle != null) {
-                        ((OneWebPageView)fragment).SetWebViewTitle(sTitle);
-//                        OneWebPageView.SetWebViewTitle(sTitle);
+//                        ((OneWebPageView)fragment).SetWebViewTitle(sTitle);
+                        OneWebPageView.SetWebViewTitle(sTitle);
                     }
 
                 }
@@ -72,6 +83,20 @@ public class MainFragment extends FragmentActivity {
             getSupportFragmentManager().beginTransaction().add(android.R.id.content, fragment).commit();
         }
         obj = this;
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            fragment.getActivity().finish();
+            UMengUtils.InitUMengConfig(fragment.getActivity());
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -108,7 +133,16 @@ public class MainFragment extends FragmentActivity {
             }
         }
     }
-
+    Handler updateHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.arg1) {
+                case 0:
+                    OneWebPageView.updatecomment(msg.arg2);
+                    break;
+            }
+        }
+    };
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -117,9 +151,46 @@ public class MainFragment extends FragmentActivity {
                 if (data != null) {
                     Bundle bundle = data.getExtras();
                     int State = bundle.getInt("ChangeState");
+                    int counts = bundle.getInt("SchEvalCount");
                     switch (State) {
                         case 2:
 //                            ((OneWebPageView) fragment).CallBack(bundle.getString("chageurl"));
+                            break;
+                        case 3:
+
+                            new Thread() {
+                                @Override
+                                public void run() {
+
+                                    String webview_url = sUrl;
+                                    String s1[] = webview_url.split("\\?");
+
+                                    s1 = s1[1].split("\\&");
+                                    s1 = s1[0].split("\\=");
+                                    final String ScheduleID = s1[1];
+                                     messagecount = 0;
+
+                                    String Url = getString(R.string.serverurl) + "/GetCampScheduleInfo";
+                                    byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
+                                            "\"ScheduleID\":" + ScheduleID + "}");
+                                    String Result = FileUtils.Bytes2String(data);
+                                    JSONObject Json = JsonUtils.Str2Json(Result);
+                                    try {
+                                        Json = Json.getJSONObject("d");
+                                        Json = Json.getJSONObject("Data");
+                                        messagecount = Json.getInt("ReplyCount");
+                                        Message MSG = new Message();
+                                        MSG.arg1 = 0;
+                                        MSG.arg2 = messagecount;
+                                        updateHandler.sendMessage(MSG);
+
+                                    } catch (JSONException e) {
+                                        LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+                                    }
+                                }
+                            }.start();
+
                             break;
                     }
                 }

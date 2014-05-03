@@ -47,7 +47,11 @@ public class WelcomPage extends BaseActivity {
         if (splash == null) {
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.qidong));
         } else {
-            imageView.setImageDrawable(splash);
+            if(firstFlag.equals("")){
+                imageView.setImageDrawable(getResources().getDrawable(R.drawable.qidong));
+            }else{
+                imageView.setImageDrawable(splash);
+            }
         }
         // 存储数据程序（程序是否是第一次运行）
         // FILENMAE 文件名称，一xml形式，存放在/data/data/<程序包名>/xxxx.xml

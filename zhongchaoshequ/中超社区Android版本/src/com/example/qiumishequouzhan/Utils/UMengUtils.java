@@ -332,8 +332,6 @@ public class UMengUtils {
                         }
                     }).start();
         }
-
-        controller.openShare(m_context, false);
     }
 
     public static void UserAdvice() {

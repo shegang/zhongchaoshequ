@@ -53,7 +53,6 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
     private String comment;
     private int EvalID;
     public long time1, time2;
-    public String SchEvalCount;//从上个页面获得最新评论数目
     public String shareCount;//分享的内容
     public String imgPath;
     public String pathURL;
@@ -71,14 +70,12 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SchEvalCount = getActivity().getIntent().getStringExtra("SchEvalCount");
         setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mContentView = inflater.inflate(R.layout.editonepage, null);
-        SchEvalCount = getActivity().getIntent().getStringExtra("SchEvalCount");
         return inflater.inflate(R.layout.fragment_custom_progress, container, false);
     }
 
@@ -111,8 +108,6 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
 
                     Bundle bundle = new Bundle();
                     bundle.putInt("ChangeState", 3);
-                    bundle.putString("SchEvalCount", SchEvalCount);
-                    bundle.putInt("AddComment", 0);//表示评论加载完成，返回是下个页面要更新数据
                     getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
                     getActivity().finish();
                     break;

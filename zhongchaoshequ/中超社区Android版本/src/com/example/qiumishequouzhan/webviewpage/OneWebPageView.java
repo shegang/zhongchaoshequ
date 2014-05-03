@@ -45,7 +45,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
     private static String msUrl;
     private static String msTitle;
     public TextView titleView;
-    public TextView ButtonText;
+    public static TextView ButtonText;
     public ImageButton backbutton;
     public ImageButton Rightbutton;
     public TextView comment_textview;
@@ -108,11 +108,11 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
             String Url;
             String webview_url;
             String webview_Url = mWebview.getUrl();
-            if(webview_Url.contains("Login")){
+            if (webview_Url.contains("Login")) {
                 webview_url = MainActivity.usercountUrl;
                 msUrl = MainActivity.usercountUrl;
                 mWebview.loadUrl(webview_url);
-            }else{
+            } else {
                 webview_url = webview_Url;
             }
 
@@ -191,8 +191,10 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 }
                 break;
                 case R.id.back_button:
+
                     Bundle bundle = new Bundle();
                     bundle.putInt("ChangeState", 3);
+                    bundle.putInt("SchEvalCount",SchEvalCount);
                     getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
                     getActivity().finish();
 
@@ -684,7 +686,13 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
         obtainData();
     }
 
+    public static void updatecomment(int counts){
 
+        ButtonText.setText(counts+"评论");
+        mWebview.loadUrl(msUrl);
+//        mWebview.reload();
+
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -799,6 +807,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                         p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
                     }
                 }
+                break;
             }
         }
     };
@@ -852,6 +861,10 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                     getActivity().finish();
                 }
             });
+            builder.show();
+        } else {
+            builder.setMessage(mes);
+            builder.setPositiveButton("确定", null);
             builder.show();
         }
     }
@@ -1169,16 +1182,16 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                     String UserName = user.getString("UserName");
                                     String loginUserName = objectParams.getString("UserName");
                                     if (UserName.equalsIgnoreCase(loginUserName) == true) {
-                                        String uid = user.getString("UserId");
+                                        String uid = user.getString("UserID");
                                         String Code = user.getString("Code");
                                         String UserNick = user.getString("UserNick");
-                                        String UserHeadImg = Json.getString("UserHeadImg");
-                                        String UserSex = Json.getString("UserSex");
+                                       /* String UserHeadImg = Json.getString("UserHeadImg");
+                                        String UserSex = Json.getString("UserSex");*/
                                         LocalDataObj.SetUserLocalData("UserID", uid);
                                         LocalDataObj.SetUserLocalData("UserToken", Code);
                                         LocalDataObj.SetUserLocalData("UserNick", UserNick);
-                                        LocalDataObj.SetUserLocalData("UserHeadImg", UserHeadImg);
-                                        LocalDataObj.SetUserLocalData("UserSex", UserSex);
+                                       /* LocalDataObj.SetUserLocalData("UserHeadImg", UserHeadImg);
+                                        LocalDataObj.SetUserLocalData("UserSex", UserSex);*/
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("ChangeState", 2);
                                         getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
@@ -1320,19 +1333,25 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                         Message MSG = new Message();
                                         MSG.arg1 = 12;
                                         updateHandler.sendMessage(MSG);
-                                    } else if (url.contains("Cash") || url.contains("DeliveryTime") || url.contains("ChoosePlace") || url.contains("NewPlace")) {
+                                    } else if(msUrl.contains("Details") && url.contains("Cash")){
+                                        Intent intent = new Intent(getActivity(), MainFragment.class);
+                                        intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
+                                        intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                                        startActivity(intent);
+                                    } else if (msUrl.contains("DeliveryTime") || url.contains("DeliveryTime") || url.contains("ChoosePlace") || url.contains("NewPlace")) {
+
                                         msUrl = url;
                                         mWebview.loadUrl(url);
                                         Message MSG = new Message();
                                         MSG.arg1 = 13;
                                         updateHandler.sendMessage(MSG);
-                                    } else {
+                                    }
+
+                                    else {
                                         Intent intent = new Intent(getActivity(), MainFragment.class);
                                         intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
                                         intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-
-//                                    startActivity(intent);
-                                        startActivityForResult(intent, 0);
+                                        startActivity(intent);
                                     }
                                 }
                             }

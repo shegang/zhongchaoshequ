@@ -26,9 +26,9 @@ public class GuidPage extends BaseActivity {
         // 设置没有Activity的title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // 去掉信息栏：
-        this.getWindow().setFlags(
+       /* this.getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         setContentView(R.layout.activity_whatsnew);
 
 
@@ -46,20 +46,11 @@ public class GuidPage extends BaseActivity {
         views.add(view3);
         views.add(view4);
 
-        final  Intent intent = new Intent(GuidPage.this, MainActivity.class);
+        final Intent intent = new Intent(GuidPage.this, MainActivity.class);
         MyPagerAdapter mPagerAdapter = new MyPagerAdapter(views);
 
         mViewPager.setAdapter(mPagerAdapter);
-        mViewPager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               if( mViewPager.getChildAt(3)==v){
-                   int i = mViewPager.getCurrentItem();
-                   startActivity(intent);
-                   GuidPage.this.finish();
-               };
-            }
-        });
+
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -69,8 +60,17 @@ public class GuidPage extends BaseActivity {
 
             @Override
             public void onPageSelected(int i) {
-
-                if (i==views.size()-1) {
+                if (i == views.size() - 1) {//点击进入
+                    View v = views.get(i);
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(intent);
+                            GuidPage.this.finish();
+                        }
+                    });
+                }
+               /* if (i == views.size() - 1) {//自动跳转
                     Timer time = new Timer();
 
                     TimerTask task = new TimerTask() {
@@ -83,7 +83,7 @@ public class GuidPage extends BaseActivity {
                         }
                     };
                     time.schedule(task, 1000);
-                }
+                }*/
             }
 
             @Override
