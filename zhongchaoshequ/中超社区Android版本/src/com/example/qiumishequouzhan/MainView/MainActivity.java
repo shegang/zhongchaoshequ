@@ -94,11 +94,8 @@ public class MainActivity extends BaseListMenu {
                     return;
                 lastUpdateTime = currentUpdateTime;
                 // mcount++;
-                if (shakecount <= 0) {
-                    Toast.makeText(MainActivity.this, "今天次数为零，明天再来吧！", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                shakecount--;
+                //  getshakenum();//这个是得到摇一摇的次数
+                int num = getshakenum();
                 //开始调用摇一摇接口  Shake.aspx
                 String url = obj_web.getUrl();
                 if (url.contains("Shake") && isInMainView == true) {
@@ -112,6 +109,12 @@ public class MainActivity extends BaseListMenu {
 //                         startActivity(intent);
                         startActivityForResult(intent, 0);
                     } else {
+
+                        if (num <= 0) {
+                            Toast.makeText(MainActivity.this, "今天次数为零，明天再来吧！", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                         sp.play(music, 1, 1, 0, 0, 1);//播放声音
                         new Thread() {
                             @Override
@@ -134,9 +137,11 @@ public class MainActivity extends BaseListMenu {
                                         if (!"".equals(startName)) {
                                             sp.pause(music);
                                             sp.play(music2, 1, 1, 0, 0, 1);
+
                                         }
                                         Url = "javascript:ShakeStarIfno(" + Result + ")";
                                         obj_web.loadUrl(Url);
+                                        shakecount--;
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
@@ -347,7 +352,7 @@ public class MainActivity extends BaseListMenu {
 
     }
 
-    public void getshakenum() {
+    public int getshakenum() {
         String uid = LocalDataObj.GetUserLocalData("UserID");
         if (uid.equalsIgnoreCase("100") == true) {
             shakecount = 0;
@@ -377,6 +382,7 @@ public class MainActivity extends BaseListMenu {
                 }
             }.start();
         }
+        return shakecount;
     }
 
     public void getNewsCounts() {
@@ -527,7 +533,7 @@ Handler updateHandler = new Handler() {
                 obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiuxingka_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
                 titleView.setText(R.string.qiuxingkatitle);
                 p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
-                getshakenum();//这个是得到摇一摇的次数
+
                 break;
             case 4:    //语音聊球
             {
