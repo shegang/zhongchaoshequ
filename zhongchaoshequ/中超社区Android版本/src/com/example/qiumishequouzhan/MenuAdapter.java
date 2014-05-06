@@ -34,13 +34,7 @@ public class MenuAdapter extends BaseAdapter {
 
     private int mActivePosition = -1;
 
-     public static String titleCount[] = {"0",
-             "0",
-             "0",
-             "0",
-             "0",
-             "0",
-             "0"};
+     public static String titleCount[] = {"0", "0", "0","0", "0","0","0","0"};
 
 
     public MenuAdapter(Context context, List<Object> items) {

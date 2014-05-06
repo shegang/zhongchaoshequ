@@ -67,7 +67,7 @@ public class MainActivity extends BaseListMenu {
     public String shareCount;//分享的内容
     public String imgPath;
     public String pathURL;
-    public int shakecount;
+    public static int shakecount;
     public String startName;
     public static String usercountUrl;
     private Handler NetWorkhandler = new Handler() {
@@ -87,15 +87,14 @@ public class MainActivity extends BaseListMenu {
     private void setListeners() {
         mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
             public void onShake() {
-                // int mcount = 0;
+              //  int mcount = 0;
                 long currentUpdateTime = System.currentTimeMillis();
                 long timeInterval = currentUpdateTime - lastUpdateTime;
                 if (timeInterval < 3000)
                     return;
                 lastUpdateTime = currentUpdateTime;
-                // mcount++;
-                //  getshakenum();//这个是得到摇一摇的次数
-                int num = getshakenum();
+               // mcount++;
+
                 //开始调用摇一摇接口  Shake.aspx
                 String url = obj_web.getUrl();
                 if (url.contains("Shake") && isInMainView == true) {
@@ -109,12 +108,10 @@ public class MainActivity extends BaseListMenu {
 //                         startActivity(intent);
                         startActivityForResult(intent, 0);
                     } else {
-
-                        if (num <= 0) {
-                            Toast.makeText(MainActivity.this, "今天次数为零，明天再来吧！", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
+//                        if (shakecount  <= 0) {
+//                            Toast.makeText(MainActivity.this, "今天次数为零，明天再来吧！", Toast.LENGTH_LONG).show();
+//                            return;
+//                        }
                         sp.play(music, 1, 1, 0, 0, 1);//播放声音
                         new Thread() {
                             @Override
@@ -130,14 +127,13 @@ public class MainActivity extends BaseListMenu {
                                 try {
                                     Json = Json.getJSONObject("d");
                                     Json = Json.getJSONObject("Data");
-                                    // shakecount = Json.getInt("ShakeCount");
+                                   // shakecount = Json.getInt("ShakeCount");
                                     startName = Json.getString("StarName");
+                                    sp.pause(music);
                                     try {
                                         sleep(800);
                                         if (!"".equals(startName)) {
-                                            sp.pause(music);
                                             sp.play(music2, 1, 1, 0, 0, 1);
-
                                         }
                                         Url = "javascript:ShakeStarIfno(" + Result + ")";
                                         obj_web.loadUrl(Url);
@@ -347,14 +343,13 @@ public class MainActivity extends BaseListMenu {
         } else {
             NetWorkhandler.sendEmptyMessage(0);
         }
+//        getshakenum();
         initState();
         getNewsCounts();//这个是得到个人中心的counts
-
     }
-
-    public int getshakenum() {
+    public void getshakenum() {
         String uid = LocalDataObj.GetUserLocalData("UserID");
-        if (uid.equalsIgnoreCase("100") == true) {
+        if (uid.equalsIgnoreCase("100") == true|| uid.equals("")) {
             shakecount = 0;
         } else {
             new Thread() {
@@ -382,12 +377,8 @@ public class MainActivity extends BaseListMenu {
                 }
             }.start();
         }
-        return shakecount;
     }
-
     public void getNewsCounts() {
-
-
         new Thread() {
             @Override
             public void run() {
@@ -416,19 +407,19 @@ public class MainActivity extends BaseListMenu {
                 }
             }
         }.start();
+
     }
 
+    //创建Handler对象，用来处理消息
+    Handler mExitHandler = new Handler() {
 
-//创建Handler对象，用来处理消息
-Handler mExitHandler = new Handler() {
-
-    @Override
-    public void handleMessage(Message msg) {//处理消息
-        // TODO Auto-generated method stub
-        super.handleMessage(msg);
-        isExit = false;
-    }
-};
+        @Override
+        public void handleMessage(Message msg) {//处理消息
+            // TODO Auto-generated method stub
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
 
     public void SendCallBack(String path) {
         String Url = "javascript:SetHeadPhoto(\"" + path + "\")";
@@ -459,38 +450,35 @@ Handler mExitHandler = new Handler() {
         }
     }
 
-Handler updateHandler = new Handler() {
-    @Override
-    public void handleMessage(Message msg) {
-        switch (msg.arg1) {
-            case 1://登陆wancheng
+    Handler updateHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.arg1) {
+                case 1://登陆wancheng
 //                    Intent intent=new Intent();
 //                    intent.setClass(MainFragment.GetInstance(), MainActivity.class);
 //                    startActivity(intent);
-                MainFragment.GetInstance().finish();
-                break;
-            case 2:    //通知页面停止刷新
-                if (p_PushInstance.isRefreshing())
-                    p_PushInstance.onRefreshComplete();
-                break;
-            case 3://通知menu的新消息数量
-                titlecount = msg.arg2 + "";//得到个人中新消息数目
+                    MainFragment.GetInstance().finish();
+                    break;
+                case 2:    //通知页面停止刷新
+                    if (p_PushInstance.isRefreshing())
+                        p_PushInstance.onRefreshComplete();
+                    break;
+                case 3://通知menu的新消息数量
+                    titlecount = msg.arg2 + "";//得到个人中新消息数目
 
-                MenuAdapter.titleCount[5] = titlecount;
-                mAdapter.notifyDataSetChanged();
-                break;
-            case 4://个人中心每日任务的邀请好友分享
-                UMengUtils.InitUMengConfig(p_MainActivity);
-                UMengUtils.ShareContent(shareCount, ExampleApplication.GetInstance().getString(R.string.BaseIP) +
-                        imgPath, ExampleApplication.GetInstance().getString(R.string.BaseIP) +
-                        pathURL);//添加分享能容
-                break;
-            case 5:
-                shakecount = msg.arg2;
-                break;
+                    MenuAdapter.titleCount[6] = titlecount;
+                    mAdapter.notifyDataSetChanged();
+                    break;
+                case 4://个人中心每日任务的邀请好友分享
+                    UMengUtils.InitUMengConfig(p_MainActivity);
+                    UMengUtils.ShareContent(shareCount, ExampleApplication.GetInstance().getString(R.string.BaseIP) +
+                            imgPath, ExampleApplication.GetInstance().getString(R.string.BaseIP) +
+                            pathURL);//添加分享能容
+                    break;
+            }
         }
-    }
-};
+    };
 
     public static MainActivity GetInstance() {
         return p_MainActivity;
@@ -529,17 +517,8 @@ Handler updateHandler = new Handler() {
                 titleView.setText(R.string.quiduititle);
                 p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
                 break;
-            case 3:    //摇球星卡
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiuxingka_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.qiuxingkatitle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
-
-                break;
-            case 4:    //语音聊球
+            case 3:    //语音聊球
             {
-
-
-                //亲加sdk启动    下载头像未完成
                 String uid = LocalDataObj.GetUserLocalData("UserID");
                 if (uid.equalsIgnoreCase("100") == true) {   //说明是游客用户
                     Intent intent = new Intent(MainActivity.this, MainFragment.class);
@@ -561,7 +540,18 @@ Handler updateHandler = new Handler() {
                 }
             }
             break;
-            case 5:    //个人中心
+            case 4:    //趣味竞猜
+                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.quweijingcai_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                titleView.setText(R.string.quweijingcaititle);
+                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                break;
+            case 5:    //摇球星卡
+                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiuxingka_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                titleView.setText(R.string.qiuxingkatitle);
+                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                break;
+
+            case 6:    //个人中心
                 String uid = LocalDataObj.GetUserLocalData("UserID");
                 if (uid.equalsIgnoreCase("100") == true) {   //说明是游客用户
                     Intent intent = new Intent(MainActivity.this, MainFragment.class);
@@ -577,7 +567,7 @@ Handler updateHandler = new Handler() {
                     p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
                 }
                 break;
-            case 6:    //关于我们
+            case 7:    //关于我们
                 obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.guanyuwomen_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
                 titleView.setText(R.string.guanyuwomentitle);
                 p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
@@ -696,7 +686,10 @@ Handler updateHandler = new Handler() {
                                 p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
                                 break;
                             case 3:   //普通返回不需要处理
-
+                                String uri = obj_web.getUrl();
+                                if(uri.contains("PageUserInfoData")){//当查看完信息后返回时页面重新加载，提示消息消失
+                                   obj_web.loadUrl(uri);
+                                }
                                 break;
 
                         }
@@ -749,158 +742,113 @@ Handler updateHandler = new Handler() {
 
     }
 
-public class JavaScriptInterface {
-    @JavascriptInterface
-    public void RunAndroidFunction(String JsonParams) throws JSONException {
-        Log.i("COMMAND", JsonParams);
+    public class JavaScriptInterface {
+        @JavascriptInterface
+        public void RunAndroidFunction(String JsonParams) throws JSONException {
+            Log.i("COMMAND", JsonParams);
 
-        JSONObject Json = JsonUtils.Str2Json(JsonParams);
-        if (Json == null) return;
+            JSONObject Json = JsonUtils.Str2Json(JsonParams);
+            if (Json == null) return;
 
-        try {
-            int Type = Json.getInt("Type");
-            String Name = Json.getString("Name");
-            String Params = Json.getString("Parms");
-            JSONObject objectParams;
+            try {
+                int Type = Json.getInt("Type");
+                String Name = Json.getString("Name");
+                String Params = Json.getString("Parms");
+                JSONObject objectParams;
 
-            switch (Type) {
-                case 1:
-                    break;
-                case 0:
-                    if (Name.equalsIgnoreCase("PayInfo"))//支付宝支付
-                    {
-                        JSONArray array = Json.getJSONArray("Parms");
-                        String Content = array.getString(0);
-                        AlipayPayinfo alipay = new AlipayPayinfo();
-                        alipay.AlipayPay(GetInstance(), Content);
+                switch (Type) {
+                    case 1:
                         break;
-                    }
-                    if (Name.equalsIgnoreCase("ShearContent")) {//个人中心中的邀请好友分享
-                        objectParams = JsonUtils.Str2Json(Params);
+                    case 0:
+                        if (Name.equalsIgnoreCase("PayInfo"))//支付宝支付
+                        {
+                            JSONArray array = Json.getJSONArray("Parms");
+                            String Content = array.getString(0);
+                            AlipayPayinfo alipay = new AlipayPayinfo();
+                            alipay.AlipayPay(GetInstance(), Content);
+                            break;
+                        }
+                        if (Name.equalsIgnoreCase("ShearContent")) {//个人中心中的邀请好友分享
+                            objectParams = JsonUtils.Str2Json(Params);
 
-                        shareCount = objectParams.getString("Title");
-                        imgPath = objectParams.getString("NewsImg");
-                        pathURL = objectParams.getString("Url");
-                        Message MSG = new Message();
-                        MSG.arg1 = 4;
-                        updateHandler.sendMessage(MSG);
-                        break;
-                    }
-                    if (Name.equalsIgnoreCase("GetDriverToken")) {//这是返回手机Token
-                        TelephonyManager tm = (TelephonyManager) GetInstance().getSystemService(Context.TELEPHONY_SERVICE);
-                        DeviceId = tm.getDeviceId();
-                        String Url = "javascript:SetToken(" + DeviceId + ")";
-                        obj_web.loadUrl(Url);
-                        break;
-                    }
-                    if (Name.equalsIgnoreCase("MobileUserAdvice")) {//关于我们中的意见反馈
-                        //意见反馈的启动
-                        FeedbackAgent agent = new FeedbackAgent(MainActivity.GetInstance());
-                        agent.startFeedbackActivity();
-                        break;
-                    }
-                    if (Name.equalsIgnoreCase("ShowSelectPic")) {//个人中心的图像上传接口
-                        // chooise();
-                        pamars = Params + "UserId=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken");
-                        UserPhotoUtils.StartUploadPhoto();
-                        break;
-                    }
-                    //判断是否带参数
-                    if (Name.equalsIgnoreCase("AccountManager") == true) {
-                        String url = null;
-                        String jsonStr = LocalDataObj.GetUserLocalData("LocalUserJson");
-                        JSONArray userArray;
-                        userArray = JsonUtils.Str2JsonArray(jsonStr);
+                            shareCount = objectParams.getString("Title");
+                            imgPath = objectParams.getString("NewsImg");
+                            pathURL = objectParams.getString("Url");
+                            Message MSG = new Message();
+                            MSG.arg1 = 4;
+                            updateHandler.sendMessage(MSG);
+                            break;
+                        }
+                        if (Name.equalsIgnoreCase("GetDriverToken")) {//这是返回手机Token
+                            TelephonyManager tm = (TelephonyManager) GetInstance().getSystemService(Context.TELEPHONY_SERVICE);
+                            DeviceId = tm.getDeviceId();
+                            String Url = "javascript:SetToken(" + DeviceId + ")";
+                            obj_web.loadUrl(Url);
+                            break;
+                        }
+                        if (Name.equalsIgnoreCase("MobileUserAdvice")) {//关于我们中的意见反馈
+                            //意见反馈的启动
+                            FeedbackAgent agent = new FeedbackAgent(MainActivity.GetInstance());
+                            agent.startFeedbackActivity();
+                            break;
+                        }
+                        if (Name.equalsIgnoreCase("ShowSelectPic")) {//个人中心的图像上传接口
+                            // chooise();
+                            pamars = Params + "UserId=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken");
+                            UserPhotoUtils.StartUploadPhoto();
+                            break;
+                        }
+                        //判断是否带参数
+                        if (Name.equalsIgnoreCase("AccountManager") == true) {
+                            String url = null;
+                            String jsonStr = LocalDataObj.GetUserLocalData("LocalUserJson");
+                            JSONArray userArray;
+                            userArray = JsonUtils.Str2JsonArray(jsonStr);
 
-                        if (userArray.length() < 2) {
-                            url = ExampleApplication.GetInstance().getString(R.string.denglu_view);
-                        } else {
-                            String nameList = "";
-                            for (int i = 0; i < userArray.length(); i++) {
-                                JSONObject user = (JSONObject) userArray.get(i);
-
-                                nameList += user.getString("UserNick");
+                            if (userArray.length() < 2) {
+                                url = ExampleApplication.GetInstance().getString(R.string.denglu_view);
+                            } else {
+                                String nameList = "";
+                                for (int i = 0; i < userArray.length(); i++) {
+                                    JSONObject user = (JSONObject) userArray.get(i);
+                                    nameList += user.getString("UserNick");
+//                                    try {
+//                                        nameList = new String(nameList.getBytes("gb2312"), "utf-8");
+//                                    } catch (UnsupportedEncodingException e) {
+//                                        e.printStackTrace();
+//                                    }
+                                    if (i != userArray.length() - 1)
+                                        nameList += ",";
+                                }
                                 try {
-                                    nameList = new String(nameList.getBytes("gb2312"), "utf-8");
+                                    nameList = new String(nameList.getBytes(), "utf-8");
                                 } catch (UnsupportedEncodingException e) {
                                     e.printStackTrace();
                                 }
-                                if (i != userArray.length() - 1)
-                                    nameList += ",";
+                                url = ExampleApplication.GetInstance().getString(R.string.guanlizhanghao_view) + "?nameList=" + nameList + "&UserNick=" + LocalDataObj.GetUserLocalData("UserNick");
+
+
                             }
+                            if (url != null) {
+                                usercountUrl = url;//多个账号选择时返回处理
+                                Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                                intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
+                                intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
 
-                            url = ExampleApplication.GetInstance().getString(R.string.guanlizhanghao_view) + "?nameList=" + nameList + "&UserNick=" + LocalDataObj.GetUserLocalData("UserNick");
-
-
-                        }
-                        if (url != null) {
-                            usercountUrl = url;//多个账号选择时返回处理
-                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
-                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-
-                            startActivityForResult(intent, 0);
+                                startActivityForResult(intent, 0);
 //                                startActivity(intent);
-                        }
-                        break;
-                    }
-                    if (Name.equalsIgnoreCase("OnLoadFinish") == true) {
-                        Message MSG = new Message();
-                        MSG.arg1 = 2;
-                        updateHandler.sendMessage(MSG);
-                        break;
-                    }
-                    //跳转球队
-                    if (Name.equalsIgnoreCase("JumpCampStar") == true) {
-                        objectParams = JsonUtils.Str2Json(Params);
-                        String url = ExampleApplication.GetInstance().getString(R.string.MainIP)
-                                + objectParams.getString("PageName")
-                                + ".aspx"
-                                + objectParams.getString("Parms")
-                                + "&UserID="
-                                + LocalDataObj.GetUserLocalData("UserID")
-                                + "&Code="
-                                + LocalDataObj.GetUserLocalData("UserToken");
-
-                        if (url != null) {
-                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
-
-                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-                            intent.putExtra(MainFragment.EXTRA_FRAGMENTTITLE, objectParams.getString("Title"));
-
-                            startActivityForResult(intent, 0);
-                        }
-                    }
-                    //跳转页进行判断
-                    if (Name.equalsIgnoreCase("JumpPage") == true) {
-                        objectParams = JsonUtils.Str2Json(Params);
-                        String isSelf = objectParams.getString("IsSelf");
-                        //自身子菜单跳转
-                        if (isSelf.equalsIgnoreCase("true") == true) {
-                            String url;
-                            if (objectParams.getString("Parms").equalsIgnoreCase("?") == true) {
-                                url = ExampleApplication.GetInstance().getString(R.string.MainIP)
-                                        + objectParams.getString("PageName")
-                                        + ".aspx"
-                                        + objectParams.getString("Parms")
-                                        + "UserID="
-                                        + LocalDataObj.GetUserLocalData("UserID")
-                                        + "&Code="
-                                        + LocalDataObj.GetUserLocalData("UserToken");
-                            } else {
-                                url = ExampleApplication.GetInstance().getString(R.string.MainIP)
-                                        + objectParams.getString("PageName")
-                                        + ".aspx"
-                                        + objectParams.getString("Parms")
-                                        + "&UserID="
-                                        + LocalDataObj.GetUserLocalData("UserID")
-                                        + "&Code="
-                                        + LocalDataObj.GetUserLocalData("UserToken");
                             }
-
-                            obj_web.loadUrl(url);
-                        } else {
+                            break;
+                        }
+                        if (Name.equalsIgnoreCase("OnLoadFinish") == true) {
+                            Message MSG = new Message();
+                            MSG.arg1 = 2;
+                            updateHandler.sendMessage(MSG);
+                            break;
+                        }
+                        //跳转球队
+                        if (Name.equalsIgnoreCase("JumpCampStar") == true) {
+                            objectParams = JsonUtils.Str2Json(Params);
                             String url = ExampleApplication.GetInstance().getString(R.string.MainIP)
                                     + objectParams.getString("PageName")
                                     + ".aspx"
@@ -911,65 +859,113 @@ public class JavaScriptInterface {
                                     + LocalDataObj.GetUserLocalData("UserToken");
 
                             if (url != null) {
-
-                                if (url.contains("AboutPage")) {
-                                    String s1[] = url.split("\\?");
-
-                                    s1 = s1[1].split("\\&");
-                                    s1 = s1[0].split("\\=");
-                                    int type = Integer.parseInt(s1[1]);
-                                    switch (type) {
-                                        case 1://obj_web.loadUrl("http://t.qq.com/cslapp");//腾讯微博
-                                        {
-                                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, "http://t.qq.com/cslapp");
-                                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-                                            startActivityForResult(intent, 0);
-                                        }
-                                        break;
-                                        case 2://obj_web.loadUrl("http://weibo.com/cslapp");//新浪微博
-                                        {
-                                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, "http://weibo.com/cslapp");
-                                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-                                            startActivityForResult(intent, 0);
-                                        }
-                                        break;
-                                        case 3: {
-                                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
-                                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-
-                                            startActivityForResult(intent, 0);
-                                        }
-                                        break;
-                                    }
-                                    return;
-                                }
                                 Intent intent = new Intent(MainActivity.this, MainFragment.class);
                                 intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
 
-                                if (url.contains("SelectNews")) {
-                                    intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_EDITPAGEWEBVIEW);
-                                } else {
-                                    intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                                intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                                intent.putExtra(MainFragment.EXTRA_FRAGMENTTITLE, objectParams.getString("Title"));
 
-                                }
-
-                                isInMainView = false;
-//                                    startActivity(intent);
                                 startActivityForResult(intent, 0);
                             }
                         }
+                        //跳转页进行判断
+                        if (Name.equalsIgnoreCase("JumpPage") == true) {
+                            objectParams = JsonUtils.Str2Json(Params);
+                            String isSelf = objectParams.getString("IsSelf");
+                            //自身子菜单跳转
+                            if (isSelf.equalsIgnoreCase("true") == true) {
+                                String url;
+                                if (objectParams.getString("Parms").equalsIgnoreCase("?") == true) {
+                                    url = ExampleApplication.GetInstance().getString(R.string.MainIP)
+                                            + objectParams.getString("PageName")
+                                            + ".aspx"
+                                            + objectParams.getString("Parms")
+                                            + "UserID="
+                                            + LocalDataObj.GetUserLocalData("UserID")
+                                            + "&Code="
+                                            + LocalDataObj.GetUserLocalData("UserToken");
+                                } else {
+                                    url = ExampleApplication.GetInstance().getString(R.string.MainIP)
+                                            + objectParams.getString("PageName")
+                                            + ".aspx"
+                                            + objectParams.getString("Parms")
+                                            + "&UserID="
+                                            + LocalDataObj.GetUserLocalData("UserID")
+                                            + "&Code="
+                                            + LocalDataObj.GetUserLocalData("UserToken");
+                                }
+
+                                obj_web.loadUrl(url);
+                            } else {
+                                String url = ExampleApplication.GetInstance().getString(R.string.MainIP)
+                                        + objectParams.getString("PageName")
+                                        + ".aspx"
+                                        + objectParams.getString("Parms")
+                                        + "&UserID="
+                                        + LocalDataObj.GetUserLocalData("UserID")
+                                        + "&Code="
+                                        + LocalDataObj.GetUserLocalData("UserToken");
+
+                                if (url != null) {
+
+                                    if (url.contains("AboutPage")) {
+                                        String s1[] = url.split("\\?");
+
+                                        s1 = s1[1].split("\\&");
+                                        s1 = s1[0].split("\\=");
+                                        int type = Integer.parseInt(s1[1]);
+                                        switch (type) {
+                                            case 1://obj_web.loadUrl("http://t.qq.com/cslapp");//腾讯微博
+                                            {
+                                                Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                                                intent.putExtra(MainFragment.EXTRA_VIEW_URL, "http://t.qq.com/cslapp");
+                                                intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                                                startActivityForResult(intent, 0);
+                                            }
+                                            break;
+                                            case 2://obj_web.loadUrl("http://weibo.com/cslapp");//新浪微博
+                                            {
+                                                Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                                                intent.putExtra(MainFragment.EXTRA_VIEW_URL, "http://weibo.com/cslapp");
+                                                intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                                                startActivityForResult(intent, 0);
+                                            }
+                                            break;
+                                            case 3: {
+                                                Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                                                intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
+                                                intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+
+                                                startActivityForResult(intent, 0);
+                                            }
+                                            break;
+                                        }
+                                        return;
+                                    }
+                                    Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                                    intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
+
+                                    if (url.contains("SelectNews")) {
+                                        intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_EDITPAGEWEBVIEW);
+                                    } else {
+                                        intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+
+                                    }
+
+                                    isInMainView = false;
+//                                    startActivity(intent);
+                                    startActivityForResult(intent, 0);
+                                }
+                            }
+                            break;
+                        }
+
                         break;
-                    }
 
-                    break;
-
+                }
+            } catch (JSONException e) {
+                LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
             }
-        } catch (JSONException e) {
-            LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
         }
     }
-}
 }

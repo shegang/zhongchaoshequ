@@ -68,8 +68,6 @@ public class WelcomPage extends BaseActivity {
             intent = new Intent(this, MainActivity.class);
 
         }
-
-
         Timer time = new Timer();
         TimerTask task = new TimerTask() {
 
@@ -83,7 +81,4 @@ public class WelcomPage extends BaseActivity {
         time.schedule(task, 2000);// 2秒进行跳转
 
     }
-
-
-
 }

@@ -44,8 +44,9 @@ public abstract class BaseListMenu extends FragmentActivity implements MenuAdapt
         items.add(new Item("中超资讯", R.drawable.ic_action_refresh_dark));
         items.add(new Item("中超竞猜", R.drawable.ic_action_refresh_dark));
         items.add(new Item("中超球队", R.drawable.ic_action_refresh_dark));
-        items.add(new Item("摇球星卡", R.drawable.ic_action_refresh_dark));
         items.add(new Item("语音聊球", R.drawable.ic_action_refresh_dark));
+        items.add(new Item("一猜到底", R.drawable.ic_action_refresh_dark));
+        items.add(new Item("摇球星卡", R.drawable.ic_action_refresh_dark));
         items.add(new Item("个人中心", R.drawable.ic_action_refresh_dark));
         items.add(new Item("关于我们", R.drawable.ic_action_refresh_dark));
         items.add(new Category("Cat 1"));
@@ -73,14 +74,14 @@ public abstract class BaseListMenu extends FragmentActivity implements MenuAdapt
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             onMenuItemClicked(position, (Item) mAdapter.getItem(position));
-            if (position == 4 || position == 5)
+            if (position == 3 || position == 6)
             {
                 String uid = LocalDataObj.GetUserLocalData("UserID");
                 if (uid.equalsIgnoreCase("100") == true)
                 {
                        return;
                 }
-                if (position == 4)
+                if (position == 3)
                     return;
             }
             mActivePosition = position;

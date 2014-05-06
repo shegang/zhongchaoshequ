@@ -40,12 +40,12 @@ import org.json.JSONObject;
 public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webView
     private View mContentView;
     private Handler mHandler;
-    private static WebView mWebview;
+    private WebView mWebview;
     private static PullToRefreshWebView p_PushInstance;
     private static String msUrl;
     private static String msTitle;
     public TextView titleView;
-    public static TextView ButtonText;
+    public TextView ButtonText;
     public ImageButton backbutton;
     public ImageButton Rightbutton;
     public TextView comment_textview;
@@ -69,7 +69,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
     private boolean flage = true;
     public ProgressDialog progressBar;
 
-    public static void SetWebViewUrl(String sUrl) {
+    public void SetWebViewUrl(String sUrl) {
         msUrl = sUrl;
     }
 
@@ -194,7 +194,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
 
                     Bundle bundle = new Bundle();
                     bundle.putInt("ChangeState", 3);
-                    bundle.putInt("SchEvalCount",SchEvalCount);
+                    //  bundle.putInt("SchEvalCount",SchEvalCount);
                     getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
                     getActivity().finish();
 
@@ -269,7 +269,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                         Intent intent = new Intent(getActivity(), MainFragment.class);
                         intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
                         intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
-                        startActivityForResult(intent, 0);//////////////////////////////////////////////////////////////////
+                        startActivityForResult(intent, 0);
                         // getActivity().finish();//当点了新增地址后调到新页并结束掉当前页
                     } else if (webview_url.contains("NewPlace")) {
                         Url = "javascript:InsertRegUsInfo()";
@@ -686,13 +686,12 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
         obtainData();
     }
 
-    public static void updatecomment(int counts){
-
-        ButtonText.setText(counts+"评论");
-        mWebview.loadUrl(msUrl);
-//        mWebview.reload();
-
+    public void updatecomment(int counts) {
+        ButtonText.setText(counts + "评论");
+        String uri = msUrl;
+        mWebview.loadUrl(uri);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -704,7 +703,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
             switch (msg.arg1) {
                 case 1://登陆wancheng
                 {
-                    Intent intent = new Intent();
+                                                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MainActivity.class);
                     startActivityForResult(intent, Activity.RESULT_CANCELED);
                 }
@@ -740,7 +739,8 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MainActivity.class);
                     startActivityForResult(intent, Activity.RESULT_CANCELED);
-//                    getActivity().finish();
+                    /*startActivity(intent);
+                   getActivity().finish();*/
                 }
                 break;
                 case 7://新增地址成功后跳转ChoosePlace页面
@@ -812,10 +812,6 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
         }
     };
 
-    public static void CallBack(String url) {
-        msUrl = url;
-        mWebview.loadUrl(url);
-    }
 
     private void obtainData() {
         // Show indeterminate progress
@@ -828,7 +824,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
         comment_textview.setText("发布评论");
         AlertDialog.Builder builder = new AlertDialog.Builder(getContentView().getContext());
         builder.setTitle("中超社区");
-        if (mes.equals("内容不不能为空")) {
+        if (mes.equals("内容不能为空")) {
             builder.setMessage(mes);
             builder.setPositiveButton("确定", null);
             builder.show();
@@ -862,7 +858,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 }
             });
             builder.show();
-        } else {
+        }else{
             builder.setMessage(mes);
             builder.setPositiveButton("确定", null);
             builder.show();
@@ -1185,13 +1181,13 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                         String uid = user.getString("UserID");
                                         String Code = user.getString("Code");
                                         String UserNick = user.getString("UserNick");
-                                       /* String UserHeadImg = Json.getString("UserHeadImg");
-                                        String UserSex = Json.getString("UserSex");*/
+                                        String UserHeadImg = Json.getString("UserHeadImg");
+                                        String UserSex = Json.getString("UserSex");
                                         LocalDataObj.SetUserLocalData("UserID", uid);
                                         LocalDataObj.SetUserLocalData("UserToken", Code);
                                         LocalDataObj.SetUserLocalData("UserNick", UserNick);
-                                       /* LocalDataObj.SetUserLocalData("UserHeadImg", UserHeadImg);
-                                        LocalDataObj.SetUserLocalData("UserSex", UserSex);*/
+                                        LocalDataObj.SetUserLocalData("UserHeadImg", UserHeadImg);
+                                        LocalDataObj.SetUserLocalData("UserSex", UserSex);
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("ChangeState", 2);
                                         getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
@@ -1333,7 +1329,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                         Message MSG = new Message();
                                         MSG.arg1 = 12;
                                         updateHandler.sendMessage(MSG);
-                                    } else if(msUrl.contains("Details") && url.contains("Cash")){
+                                    } else if (msUrl.contains("Details") && url.contains("Cash")) {
                                         Intent intent = new Intent(getActivity(), MainFragment.class);
                                         intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
                                         intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
@@ -1345,9 +1341,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                         Message MSG = new Message();
                                         MSG.arg1 = 13;
                                         updateHandler.sendMessage(MSG);
-                                    }
-
-                                    else {
+                                    } else {
                                         Intent intent = new Intent(getActivity(), MainFragment.class);
                                         intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
                                         intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);

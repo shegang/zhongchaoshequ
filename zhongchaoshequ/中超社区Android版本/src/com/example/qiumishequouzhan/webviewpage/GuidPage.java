@@ -26,9 +26,9 @@ public class GuidPage extends BaseActivity {
         // 设置没有Activity的title
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         // 去掉信息栏：
-       /* this.getWindow().setFlags(
+        this.getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_whatsnew);
 
 

@@ -16,6 +16,7 @@ import com.devspark.progressfragment.ProgressFragment;
 import com.example.qiumishequouzhan.LocalDataObj;
 import com.example.qiumishequouzhan.R;
 import com.example.qiumishequouzhan.Utils.*;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,9 +35,9 @@ public class MainFragment extends FragmentActivity {
     public static final int FRAGMENT_EDITPAGEWEBVIEW = 1;
 
     public static MainFragment obj;
-    public static Fragment fragment;
-    public String sUrl;
+    public  Fragment fragment;
     public int messagecount;
+    public String sUrl;
 
     public static MainFragment GetInstance() {
         return obj;
@@ -62,20 +63,20 @@ public class MainFragment extends FragmentActivity {
                 case FRAGMENT_ONEPAGEWEBVIEW: {
                     sUrl = getIntent().getStringExtra(EXTRA_VIEW_URL);
                     fragment = OneWebPageView.newInstance();
-//                    ((OneWebPageView)fragment).SetWebViewUrl(sUrl);
-                    OneWebPageView.SetWebViewUrl(sUrl);
+                    ((OneWebPageView) fragment).SetWebViewUrl(sUrl);
+//                     OneWebPageView.SetWebViewUrl(sUrl);
                     if (sTitle != null) {
-//                        ((OneWebPageView)fragment).SetWebViewTitle(sTitle);
-                        OneWebPageView.SetWebViewTitle(sTitle);
+                        ((OneWebPageView) fragment).SetWebViewTitle(sTitle);
+                        //OneWebPageView.SetWebViewTitle(sTitle);
                     }
 
                 }
                 break;
                 case FRAGMENT_EDITPAGEWEBVIEW: {
-                    String sUrl = getIntent().getStringExtra(EXTRA_VIEW_URL);
-
+                    sUrl = getIntent().getStringExtra(EXTRA_VIEW_URL);
                     fragment = EditOnePage.newInstance();
-                    EditOnePage.SetWebViewUrl(sUrl);
+
+                    ((EditOnePage) fragment).SetWebViewUrl(sUrl);
                 }
                 break;
 
@@ -90,14 +91,14 @@ public class MainFragment extends FragmentActivity {
         super.onResumeFragments();
     }
 
-    @Override
+  /*  @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             fragment.getActivity().finish();
             UMengUtils.InitUMengConfig(fragment.getActivity());
         }
         return super.onKeyDown(keyCode, event);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -133,12 +134,14 @@ public class MainFragment extends FragmentActivity {
             }
         }
     }
+
     Handler updateHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.arg1) {
                 case 0:
-                    OneWebPageView.updatecomment(msg.arg2);
+                    ((OneWebPageView) fragment).SetWebViewUrl(sUrl);
+                    ((OneWebPageView) fragment).updatecomment(msg.arg2);
                     break;
             }
         }
@@ -151,46 +154,47 @@ public class MainFragment extends FragmentActivity {
                 if (data != null) {
                     Bundle bundle = data.getExtras();
                     int State = bundle.getInt("ChangeState");
-                    int counts = bundle.getInt("SchEvalCount");
+                    // int counts = bundle.getInt("SchEvalCount");
                     switch (State) {
                         case 2:
 //                            ((OneWebPageView) fragment).CallBack(bundle.getString("chageurl"));
+
                             break;
                         case 3:
+                            if (sUrl.contains("GuessWinLost")) {
+                                new Thread() {
+                                    @Override
+                                    public void run() {
 
-                            new Thread() {
-                                @Override
-                                public void run() {
+                                        String webview_url = sUrl;
+                                        String s1[] = webview_url.split("\\?");
 
-                                    String webview_url = sUrl;
-                                    String s1[] = webview_url.split("\\?");
+                                        s1 = s1[1].split("\\&");
+                                        s1 = s1[0].split("\\=");
+                                        final String ScheduleID = s1[1];
+                                        messagecount = 0;
 
-                                    s1 = s1[1].split("\\&");
-                                    s1 = s1[0].split("\\=");
-                                    final String ScheduleID = s1[1];
-                                     messagecount = 0;
+                                        String Url = getString(R.string.serverurl) + "/GetCampScheduleInfo";
+                                        byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                                " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
+                                                "\"ScheduleID\":" + ScheduleID + "}");
+                                        String Result = FileUtils.Bytes2String(data);
+                                        JSONObject Json = JsonUtils.Str2Json(Result);
+                                        try {
+                                            Json = Json.getJSONObject("d");
+                                            Json = Json.getJSONObject("Data");
+                                            messagecount = Json.getInt("ReplyCount");
+                                            Message MSG = new Message();
+                                            MSG.arg1 = 0;
+                                            MSG.arg2 = messagecount;
+                                            updateHandler.sendMessage(MSG);
 
-                                    String Url = getString(R.string.serverurl) + "/GetCampScheduleInfo";
-                                    byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
-                                            "\"ScheduleID\":" + ScheduleID + "}");
-                                    String Result = FileUtils.Bytes2String(data);
-                                    JSONObject Json = JsonUtils.Str2Json(Result);
-                                    try {
-                                        Json = Json.getJSONObject("d");
-                                        Json = Json.getJSONObject("Data");
-                                        messagecount = Json.getInt("ReplyCount");
-                                        Message MSG = new Message();
-                                        MSG.arg1 = 0;
-                                        MSG.arg2 = messagecount;
-                                        updateHandler.sendMessage(MSG);
-
-                                    } catch (JSONException e) {
-                                        LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+                                        } catch (JSONException e) {
+                                            LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+                                        }
                                     }
-                                }
-                            }.start();
-
+                                }.start();
+                            }
                             break;
                     }
                 }

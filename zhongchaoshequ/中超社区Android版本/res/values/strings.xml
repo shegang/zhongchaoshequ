@@ -14,6 +14,7 @@
     <string name="newPlace">http://marsxserver.xicp.net/webpage/NewPlace.aspx</string>
     <string name="ChoosePlace">http://marsxserver.xicp.net/webpage/ChoosePlace.aspx</string>
     <string name="Record">http://marsxserver.xicp.net/webpage/Record.aspx</string>
+    <string name="quweijingcai_view">http://marsxserver.xicp.net/webpage/QAndA.aspx</string>
 
 
     <string name="denglu_view">http://marsxserver.xicp.net/webpage/Login.aspx</string>
@@ -27,6 +28,7 @@
 
     <string name="maintitle">中超资讯</string>
     <string name="jingcaititle">中超竞猜</string>
+    <string name="quweijingcaititle">一猜到底</string>
     <string name="quiduititle">中超球队</string>
     <string name="qiuxingkatitle">摇球星卡</string>
     <string name="gerenzhongxintitle">个人中心</string>

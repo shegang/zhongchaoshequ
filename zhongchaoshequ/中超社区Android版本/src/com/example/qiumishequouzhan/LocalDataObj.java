@@ -19,6 +19,10 @@ public class LocalDataObj {
     }
     public static void SetUserLocalData(String sKeyName,String Value)
     {
+        if(sKeyName.equalsIgnoreCase("UserID"))
+        {
+            ExampleApplication.GetInstance().SetJpushAlias(Value);
+        }
         sKeyName = sKeyName.toUpperCase();
         SharedPreferences settings = ExampleApplication.GetInstance().getSharedPreferences(ExampleApplication.GetInstance().getString(R.string.userlocaldata), 0);
 

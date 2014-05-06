@@ -66,7 +66,11 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
         EditOnePage fragment = new EditOnePage();
         return fragment;
     }
+    public static EditOnePage obj;
 
+    public static EditOnePage GetInstance() {
+        return obj;
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
