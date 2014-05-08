@@ -2,29 +2,29 @@
 <resources>
     <string name="app_name">中超社区</string>
     <string name="loading">亲，正在努力加载哦！</string>
-    <string name="BaseIP">http://marsxserver.xicp.net/</string>
-    <string name="MainIP">http://marsxserver.xicp.net/webpage/</string>
-    <string name="MainView">http://marsxserver.xicp.net/webpage/index.aspx</string>
-    <string name="jingcai_view">http://marsxserver.xicp.net/webpage/Guess.aspx</string>
-    <string name="qiudui_view">http://marsxserver.xicp.net/webpage/CampList.aspx</string>
-    <string name="qiuxingka_view">http://marsxserver.xicp.net/webpage/Shake.aspx</string>
-    <string name="gerenzhongxin_view">http://marsxserver.xicp.net/webpage/PageUserInfoData.aspx</string>
-    <string name="guanyuwomen_view">http://marsxserver.xicp.net/webpage/AboutUs.aspx</string>
-    <string name="GuessWinLost_view">http://marsxserver.xicp.net/webpage/GuessWinLost.aspx</string>
-    <string name="newPlace">http://marsxserver.xicp.net/webpage/NewPlace.aspx</string>
-    <string name="ChoosePlace">http://marsxserver.xicp.net/webpage/ChoosePlace.aspx</string>
-    <string name="Record">http://marsxserver.xicp.net/webpage/Record.aspx</string>
-    <string name="quweijingcai_view">http://marsxserver.xicp.net/webpage/QAndA.aspx</string>
+    <string name="BaseIP">http://s1.wisports.cn:8095/</string>
+    <string name="MainIP">http://s1.wisports.cn:8095/webpage/</string>
+    <string name="MainView">http://s1.wisports.cn:8095/webpage/index.aspx</string>
+    <string name="jingcai_view">http://s1.wisports.cn:8095/webpage/Guess.aspx</string>
+    <string name="qiudui_view">http://s1.wisports.cn:8095/webpage/CampList.aspx</string>
+    <string name="qiuxingka_view">http://s1.wisports.cn:8095/webpage/Shake.aspx</string>
+    <string name="gerenzhongxin_view">http://s1.wisports.cn:8095/webpage/PageUserInfoData.aspx</string>
+    <string name="guanyuwomen_view">http://s1.wisports.cn:8095/webpage/AboutUs.aspx</string>
+    <string name="GuessWinLost_view">http://s1.wisports.cn:8095/webpage/GuessWinLost.aspx</string>
+    <string name="newPlace">http://s1.wisports.cn:8095/webpage/NewPlace.aspx</string>
+    <string name="ChoosePlace">http://s1.wisports.cn:8095/webpage/ChoosePlace.aspx</string>
+    <string name="Record">http://s1.wisports.cn:8095/webpage/Record.aspx</string>
+    <string name="quweijingcai_view">http://s1.wisports.cn:8095/webpage/QAndA.aspx</string>
 
 
-    <string name="denglu_view">http://marsxserver.xicp.net/webpage/Login.aspx</string>
+    <string name="denglu_view">http://s1.wisports.cn:8095/webpage/Login.aspx</string>
 
-    <string name="guanlizhanghao_view">http://marsxserver.xicp.net/webpage/AccountManager.aspx</string>
-    <string name="paihangbang_view">http://marsxserver.xicp.net/webpage/GoldRankPage.aspx</string>
+    <string name="guanlizhanghao_view">http://s1.wisports.cn:8095/webpage/AccountManager.aspx</string>
+    <string name="paihangbang_view">http://s1.wisports.cn:8095/webpage/GoldRankPage.aspx</string>
 
 
     <string name="userlocaldata">userlocaldata</string>
-    <string name="serverurl">http://marsxserver.xicp.net/WebService.asmx</string>
+    <string name="serverurl">http://s1.wisports.cn:8095/WebService.asmx</string>
 
     <string name="maintitle">中超资讯</string>
     <string name="jingcaititle">中超竞猜</string>

@@ -144,50 +144,51 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                         alertTips("内容不能为空");
                         return;
                     }
-                    if (time1 - time2 < 10000 && time2 > 0) {
+                    time1 = System.currentTimeMillis();//记录点击开始发送的时间
+                    if (time1 - time2 < 20000 && time2 > 0) {
                         Toast.makeText(getContentView().getContext(), "不能连续发送评论", Toast.LENGTH_LONG).show();
                         return;
+                    } else {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                String webview_url = mWebview.getUrl();
+                                String Url = "";
+                                byte[] data = null;
+                                time2 = System.currentTimeMillis();
+                                if (webview_url.contains("Evaluate")) {
+                                    Url = getString(R.string.serverurl) + "/InsertEvaluate";
+                                    data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
+                                            "\"ID\":" + sNewsID + ", \"evalContent\":\"" + commenttext + "\"," +
+                                            " \"parentID\":" + EvalID + ",\"EvalType\":\"" + EvalType + "\"}");
+                                } else if (webview_url.contains("ReplyEvaluate")) {
+                                    Url = getString(R.string.serverurl) + "/InsertEvaluate";
+                                    data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
+                                            "\"ID\":" + sNewsID + ", \"evalContent\":\"" + commenttext + "\"," +
+                                            " \"parentID\":" + EvalID + ",\"EvalType\":\"" + EvalType + "\"}");
+                                } else {
+                                    Url = getString(R.string.serverurl) + "/SendMailToUser";
+                                    data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," + " \"RecUserID\":" + RecUserId + "," +
+                                            "\"Title\":\"" + commenttext + "\", \"Content\":\"" + commenttext + "\" }");
+                                }
+
+                                String Result = FileUtils.Bytes2String(data);
+                                JSONObject Json = JsonUtils.Str2Json(Result);
+                                try {
+                                    Json = Json.getJSONObject("d");
+                                } catch (JSONException e) {
+                                    LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+                                }
+                                Message MSG = new Message();
+                                MSG.arg1 = 3;
+                                MSG.arg2 = SEND_SUCCESS;
+                                updateHandler.sendMessage(MSG);
+                            }
+                        }.start();
                     }
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            String webview_url = mWebview.getUrl();
-                            String Url = "";
-                            byte[] data = null;
-
-                            if (webview_url.contains("Evaluate")) {
-                                Url = getString(R.string.serverurl) + "/InsertEvaluate";
-                                data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
-                                        "\"ID\":" + sNewsID + ", \"evalContent\":\"" + commenttext + "\"," +
-                                        " \"parentID\":" + EvalID + ",\"EvalType\":\"" + EvalType + "\"}");
-                            } else if (webview_url.contains("ReplyEvaluate")) {
-                                Url = getString(R.string.serverurl) + "/InsertEvaluate";
-                                data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
-                                        "\"ID\":" + sNewsID + ", \"evalContent\":\"" + commenttext + "\"," +
-                                        " \"parentID\":" + EvalID + ",\"EvalType\":\"" + EvalType + "\"}");
-                            } else {
-                                Url = getString(R.string.serverurl) + "/SendMailToUser";
-                                data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," + " \"RecUserID\":" + RecUserId + "," +
-                                        "\"Title\":\"" + commenttext + "\", \"Content\":\"" + commenttext + "\" }");
-                            }
-
-                            String Result = FileUtils.Bytes2String(data);
-                            JSONObject Json = JsonUtils.Str2Json(Result);
-                            try {
-                                Json = Json.getJSONObject("d");
-                            } catch (JSONException e) {
-                                LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
-                            }
-                            Message MSG = new Message();
-                            MSG.arg1 = 3;
-                            MSG.arg2 = SEND_SUCCESS;
-                            updateHandler.sendMessage(MSG);
-                            time2 = System.currentTimeMillis();
-                        }
-                    }.start();
                 }
                 break;
                 case R.id.back_button:
@@ -412,7 +413,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
         mWebSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebSetting.setAppCacheMaxSize(1024 * 1024 * 8);
 
-        mWebSetting.setAllowFileAccess(true);
+        mWebSetting.setAllowFileAccess(true);//启用或禁用WebView访问文件数据
         mWebSetting.setAppCacheEnabled(true);
 
         mWebSetting.setJavaScriptCanOpenWindowsAutomatically(true);
@@ -432,7 +433,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
         mWebview.setWebViewClient(new WebViewClient() {
 
             @Override
-            public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
+            public void onUnhandledKeyEvent(WebView view, KeyEvent event) {// （Key事件未被加载时调用）
                 super.onUnhandledKeyEvent(view, event);
 
             }
@@ -453,6 +454,17 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 }
 //        progressBar = ProgressDialog.show(MainActivity.GetInstance(), null, "正在加载，请稍后…");
             }
+
+           /* @Override
+            public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+                if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    if (progressBar.isShowing()) {
+                        progressBar.dismiss();
+                    }
+                }
+
+                return super.shouldOverrideKeyEvent(view, event);
+            }*/
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -703,7 +715,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
             switch (msg.arg1) {
                 case 1://登陆wancheng
                 {
-                                                     Intent intent = new Intent();
+                    Intent intent = new Intent();
                     intent.setClass(getActivity(), MainActivity.class);
                     startActivityForResult(intent, Activity.RESULT_CANCELED);
                 }
@@ -763,7 +775,6 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                     break;
                 case 8: {
                     comment_layout.setVisibility(View.VISIBLE);
-
                     comment_textview.setText(comment);
                     break;
                 }
@@ -777,7 +788,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 }
                 case 11://添加分享平台和内容
                     UMengUtils.InitUMengConfig(mContentView.getContext());//添加分享平台
-                    UMengUtils.ShareContent(shareCount);//添加分享能容
+                    UMengUtils.ShareContent(shareCount);//添加分享内容
                     break;
                 case 12:
                     getActivity().finish();
@@ -858,7 +869,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 }
             });
             builder.show();
-        }else{
+        } else {
             builder.setMessage(mes);
             builder.setPositiveButton("确定", null);
             builder.show();
@@ -1003,8 +1014,6 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                             Message MSG = new Message();
                             MSG.arg1 = 8;
                             updateHandler.sendMessage(MSG);
-
-
                             break;
                         }
                         if (Name.equalsIgnoreCase("InsertEvaluate") == true) {
@@ -1323,7 +1332,11 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                         Intent intent = new Intent(getActivity(), MainFragment.class);
                                         intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
                                         intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_EDITPAGEWEBVIEW);
-
+                                        startActivity(intent);
+                                    } else if (url.contains("EvaluatePage")) {//从评论管理跳到竞猜品论页
+                                        Intent intent = new Intent(getActivity(), MainFragment.class);
+                                        intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
+                                        intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_EDITPAGEWEBVIEW);
                                         startActivity(intent);
                                     } else if (url.contains("PageUserInfoData")) {//修改密码点了取消之后
                                         Message MSG = new Message();

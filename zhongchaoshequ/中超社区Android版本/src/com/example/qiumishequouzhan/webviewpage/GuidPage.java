@@ -39,13 +39,13 @@ public class GuidPage extends BaseActivity {
         View view2 = mLi.inflate(R.layout.whats_news_gallery_two, null);
         View view3 = mLi.inflate(R.layout.whats_news_gallery_three, null);
         View view4 = mLi.inflate(R.layout.whats_news_gallery_four, null);
-
+        View view5 = mLi.inflate(R.layout.whats_news_gallery_five, null);
         final ArrayList<View> views = new ArrayList<View>();
         views.add(view1);
         views.add(view2);
         views.add(view3);
         views.add(view4);
-
+        views.add(view5);
         final Intent intent = new Intent(GuidPage.this, MainActivity.class);
         MyPagerAdapter mPagerAdapter = new MyPagerAdapter(views);
 

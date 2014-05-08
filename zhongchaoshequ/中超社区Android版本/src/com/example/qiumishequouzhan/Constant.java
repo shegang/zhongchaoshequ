@@ -12,8 +12,8 @@ public class Constant {
     public static final Boolean DEBUG_MODE = true;
 
   //     public static final String SERVER_URL = "http://marsxserver.xicp.net";
-//    public static final String SERVER_URL = "http://s1.wisports.cn:8095";
-    public static final String SERVER_URL = "http://marsxserver.xicp.net";
+    public static final String SERVER_URL = "http://s1.wisports.cn:8095";
+//    public static final String SERVER_URL = "http://marsxserver.xicp.net";
 
     public static final String SERVER_URL_SOFT = "http://s1.wisports.cn:8089";
 

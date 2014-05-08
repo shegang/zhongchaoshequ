@@ -87,13 +87,12 @@ public class MainActivity extends BaseListMenu {
     private void setListeners() {
         mShakeListener.setOnShakeListener(new ShakeListener.OnShakeListener() {
             public void onShake() {
-              //  int mcount = 0;
+
                 long currentUpdateTime = System.currentTimeMillis();
                 long timeInterval = currentUpdateTime - lastUpdateTime;
                 if (timeInterval < 3000)
                     return;
                 lastUpdateTime = currentUpdateTime;
-               // mcount++;
 
                 //开始调用摇一摇接口  Shake.aspx
                 String url = obj_web.getUrl();
@@ -108,46 +107,46 @@ public class MainActivity extends BaseListMenu {
 //                         startActivity(intent);
                         startActivityForResult(intent, 0);
                     } else {
-//                        if (shakecount  <= 0) {
-//                            Toast.makeText(MainActivity.this, "今天次数为零，明天再来吧！", Toast.LENGTH_LONG).show();
-//                            return;
-//                        }
-                        sp.play(music, 1, 1, 0, 0, 1);//播放声音
-                        new Thread() {
-                            @Override
-                            public void run() {
-                                //你要执行的方法
-                                //执行完毕后给handler发送一个空消息
-                                String Url = getString(R.string.serverurl) + "/ShakeStarIfno";
-                                byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"}");
-                                String Result = FileUtils.Bytes2String(data);
-                                int nTemp = 0;
-                                JSONObject Json = JsonUtils.Str2Json(Result);
-                                try {
-                                    Json = Json.getJSONObject("d");
-                                    Json = Json.getJSONObject("Data");
-                                   // shakecount = Json.getInt("ShakeCount");
-                                    startName = Json.getString("StarName");
-                                    sp.pause(music);
+                        if (shakecount <= 0) {
+                            Toast.makeText(MainActivity.this, "请购买次数", Toast.LENGTH_LONG).show();
+                            return;
+                        } else {
+                            sp.play(music, 1, 1, 0, 0, 1);//播放声音
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    //你要执行的方法
+                                    //执行完毕后给handler发送一个空消息
+                                    String Url = getString(R.string.serverurl) + "/ShakeStarIfno";
+                                    byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"}");
+                                    String Result = FileUtils.Bytes2String(data);
+                                    int nTemp = 0;
+                                    JSONObject Json = JsonUtils.Str2Json(Result);
                                     try {
-                                        sleep(800);
-                                        if (!"".equals(startName)) {
-                                            sp.play(music2, 1, 1, 0, 0, 1);
+                                        Json = Json.getJSONObject("d");
+                                        Json = Json.getJSONObject("Data");
+                                        // shakecount = Json.getInt("ShakeCount");
+                                        startName = Json.getString("StarName");
+                                        try {
+                                            sleep(800);
+                                            sp.pause(music);
+                                            if (!"".equals(startName)) {
+                                                sp.play(music2, 1, 1, 0, 0, 1);
+                                            }
+                                            Url = "javascript:ShakeStarIfno(" + Result + ")";
+                                            obj_web.loadUrl(Url);
+                                            shakecount--;
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
                                         }
-                                        Url = "javascript:ShakeStarIfno(" + Result + ")";
-                                        obj_web.loadUrl(Url);
-                                        shakecount--;
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
+
+                                    } catch (JSONException e) {
+                                        LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
                                     }
-
-                                } catch (JSONException e) {
-                                    LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
                                 }
-                            }
-                        }.start();
-
+                            }.start();
+                        }
                     }
                 }
             }
@@ -160,6 +159,7 @@ public class MainActivity extends BaseListMenu {
         music = sp.load(this, R.raw.shake_sound_male, 1); //把你的声音素材放到res/raw里，第2个参数即为资源文件，第3个为音乐的优先级
         music2 = sp.load(this, R.raw.shake_sound, 1);
         mShakeListener = new ShakeListener(this);
+        getShakecount();
         setListeners();
 
     }
@@ -343,41 +343,39 @@ public class MainActivity extends BaseListMenu {
         } else {
             NetWorkhandler.sendEmptyMessage(0);
         }
-//        getshakenum();
         initState();
         getNewsCounts();//这个是得到个人中心的counts
     }
-    public void getshakenum() {
-        String uid = LocalDataObj.GetUserLocalData("UserID");
-        if (uid.equalsIgnoreCase("100") == true|| uid.equals("")) {
-            shakecount = 0;
-        } else {
-            new Thread() {
-                @Override
-                public void run() {
-                    //你要执行的方法
-                    //执行完毕后给handler发送一个空消息
-                    String Url = getString(R.string.serverurl) + "/ShakeStarIfno";
-                    byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"}");
-                    String Result = FileUtils.Bytes2String(data);
-                    JSONObject Json = JsonUtils.Str2Json(Result);
-                    try {
-                        Json = Json.getJSONObject("d");
-                        Json = Json.getJSONObject("Data");
-                        shakecount = Json.getInt("ShakeCount");
-                        startName = Json.getString("StarName");
-                        Message MSG = new Message();
-                        MSG.arg1 = 5;
-                        MSG.arg2 = shakecount;
-                        updateHandler.sendMessage(MSG);
-                    } catch (JSONException e) {
-                        LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+
+    public void getShakecount() {
+        new Thread() {
+            @Override
+            public void run() {
+                //获取摇一摇之前的次数
+                String Url = getString(R.string.serverurl) + "/GetShakeCount";
+                byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"}");
+                String Result = FileUtils.Bytes2String(data);
+                JSONObject Json = JsonUtils.Str2Json(Result);
+                try {
+                    if (Json == null) {
+                        return;
                     }
+                    Json = Json.getJSONObject("d");
+                    Json = Json.getJSONObject("Data");
+                    int num = Json.getInt("ShakeCount");
+                    Message MSG = new Message();
+                    MSG.arg1 = 5;
+                    MSG.arg2 = num;
+                    updateHandler.sendMessage(MSG);
+
+                } catch (JSONException e) {
+                    LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
                 }
-            }.start();
-        }
+            }
+        }.start();
     }
+
     public void getNewsCounts() {
         new Thread() {
             @Override
@@ -476,6 +474,8 @@ public class MainActivity extends BaseListMenu {
                             imgPath, ExampleApplication.GetInstance().getString(R.string.BaseIP) +
                             pathURL);//添加分享能容
                     break;
+                case 5://获取摇一摇的次数
+                    shakecount = msg.arg2;
             }
         }
     };
@@ -687,8 +687,10 @@ public class MainActivity extends BaseListMenu {
                                 break;
                             case 3:   //普通返回不需要处理
                                 String uri = obj_web.getUrl();
-                                if(uri.contains("PageUserInfoData")){//当查看完信息后返回时页面重新加载，提示消息消失
-                                   obj_web.loadUrl(uri);
+                                if (uri.contains("PageUserInfoData")) {//当查看完信息后返回时页面重新加载，提示消息消失
+                                    obj_web.loadUrl(uri);
+                                } else if (uri.contains("Guess")) {//当竞猜支持后返回竞猜列表时页面的刷新
+                                    obj_web.reload();
                                 }
                                 break;
 
