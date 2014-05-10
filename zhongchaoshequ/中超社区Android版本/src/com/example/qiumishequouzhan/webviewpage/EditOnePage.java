@@ -311,10 +311,11 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
         mWebview.requestFocus();
         WebSettings mWebSetting = mWebview.getSettings();
         mWebSetting.setJavaScriptEnabled(true);
+        //自适应屏幕显示
         mWebSetting.setUseWideViewPort(true);
-        mWebSetting.setDefaultTextEncodingName("UTF-8");
         mWebSetting.setLoadWithOverviewMode(true);
 
+        mWebSetting.setDefaultTextEncodingName("UTF-8");
         mWebSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
         mWebSetting.setAppCacheMaxSize(1024 * 1024 * 8);
 

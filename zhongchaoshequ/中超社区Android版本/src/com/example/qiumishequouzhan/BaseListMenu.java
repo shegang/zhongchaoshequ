@@ -1,16 +1,20 @@
 package com.example.qiumishequouzhan;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.example.qiumishequouzhan.MainView.MainActivity;
 import com.example.qiumishequouzhan.R;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +23,7 @@ import java.util.List;
  * Time: 上午11:30
  * To change this template use File | Settings | File Templates.
  */
-public abstract class BaseListMenu extends FragmentActivity implements MenuAdapter.MenuListener {
+public abstract class BaseListMenu extends FragmentActivity implements MenuAdapter.MenuListener, MenuDrawer.OnDrawerStateChangeListener {
     private static final String STATE_ACTIVE_POSITION =
             "net.simonvt.menudrawer.samples.LeftDrawerSample.activePosition";
 
@@ -29,7 +33,6 @@ public abstract class BaseListMenu extends FragmentActivity implements MenuAdapt
     protected ListView mList;
 
     private int mActivePosition = 0;
-
     @Override
     protected void onCreate(Bundle inState) {
         super.onCreate(inState);
@@ -61,7 +64,36 @@ public abstract class BaseListMenu extends FragmentActivity implements MenuAdapt
 
         mList.setOnItemClickListener(mItemClickListener);
 
+        mMenuDrawer.setOnDrawerStateChangeListener(this);
+
         mMenuDrawer.setMenuView(mList);
+    }
+
+    public void onDrawerStateChange(int oldState, int newState) {
+        int nTemp = 0;
+        nTemp += 1;
+
+
+    }
+
+    /**
+     * Called when the drawer slides.
+     *
+     * @param openRatio    Ratio for how open the menu is.
+     * @param offsetPixels Current offset of the menu in pixels.
+     */
+    public void onDrawerSlide(float openRatio, int offsetPixels) {
+        int nTemp = 0;
+        nTemp += 1;
+        if (openRatio == 0)
+        {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.GetWebView().scrollTo(0,1+(int)(Math.random()*60));
+                }
+            }, 50);
+        }
     }
 
     protected abstract void onMenuItemClicked(int position, Item item);
@@ -74,12 +106,10 @@ public abstract class BaseListMenu extends FragmentActivity implements MenuAdapt
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             onMenuItemClicked(position, (Item) mAdapter.getItem(position));
-            if (position == 3 || position == 6)
-            {
+            if (position == 3 || position == 6) {
                 String uid = LocalDataObj.GetUserLocalData("UserID");
-                if (uid.equalsIgnoreCase("100") == true)
-                {
-                       return;
+                if (uid.equalsIgnoreCase("100") == true) {
+                    return;
                 }
                 if (position == 3)
                     return;

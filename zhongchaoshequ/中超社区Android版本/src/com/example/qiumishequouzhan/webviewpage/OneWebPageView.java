@@ -68,6 +68,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
     public String shareCount;
     private boolean flage = true;
     public ProgressDialog progressBar;
+    public int errorCode;
 
     public void SetWebViewUrl(String sUrl) {
         msUrl = sUrl;
@@ -658,7 +659,8 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
             titleView.setText(R.string.title22);
         }
         if (msUrl.contains("GuessOrder")) {
-            titleView.setText(R.string.title3);
+            //titleView.setText(R.string.title3);
+            titleView.setText(R.string.title28);
             Rightbutton.setImageDrawable(getResources().getDrawable(R.drawable.caifubang));
         }
         if (msUrl.contains("Message")) {
@@ -715,11 +717,12 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
             switch (msg.arg1) {
                 case 1://登陆wancheng
                 {
+                    Toast.makeText(getContentView().getContext(),"登陆成功",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MainActivity.class);
                     startActivityForResult(intent, Activity.RESULT_CANCELED);
                 }
-//                    getActivity().finish();
+                    getActivity().finish();
                 break;
                 case 2:    //通知页面停止刷新
                     if (p_PushInstance.isRefreshing())
@@ -819,6 +822,9 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                     }
                 }
                 break;
+                case 14:
+                    alertTips("1");
+                    break;
             }
         }
     };
@@ -861,11 +867,11 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
             builder.setPositiveButton("确定", null);
             builder.show();
         } else if (mes.equals("1")) {
-            builder.setMessage("此账号已存在，请选择账号登陆");
+            builder.setMessage(GetStringTips.GetString(errorCode));
             builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    getActivity().finish();
+                  //  getActivity().finish();
                 }
             });
             builder.show();
@@ -1224,48 +1230,58 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                     String Result = FileUtils.Bytes2String(data);
                                     JSONObject Json = JsonUtils.Str2Json(Result);
                                     try {
-                                        Json = Json.getJSONObject("d").getJSONObject("Data");
-                                        String uid = Json.getString("UserId");
-                                        String Code = Json.getString("Code");
-                                        String UserNick = Json.getString("UserNick");
-                                        String UserName = Json.getString("UserName");
-                                        String UserHeadImg = Json.getString("UserHeadImg");
-                                        String UserSex = Json.getString("UserSex");
-                                        LocalDataObj.SetUserLocalData("UserID", uid);
-                                        LocalDataObj.SetUserLocalData("UserToken", Code);
-                                        LocalDataObj.SetUserLocalData("UserNick", UserNick);
-                                        LocalDataObj.SetUserLocalData("UserHeadImg", UserHeadImg);
-                                        LocalDataObj.SetUserLocalData("UserSex", UserSex);
-
-                                        String jsonStr = LocalDataObj.GetUserLocalData("LocalUserJson");
-                                        JSONArray userArray;
-                                        if (jsonStr.equalsIgnoreCase("") == true) {
-                                            userArray = new JSONArray();
-                                        } else {
-                                            userArray = JsonUtils.Str2JsonArray(jsonStr);
+                                        Json = Json.getJSONObject("d");
+                                        errorCode = Json.getInt("Code");
+                                        if (errorCode != 0) {
+                                            Message MSG = new Message();
+                                            MSG.arg1 = 14;
+                                            updateHandler.sendMessage(MSG);
+                                             return;
                                         }
-                                        JSONObject user = new JSONObject();
-                                        user.put("UserID", uid);
-                                        user.put("Code", Code);
-                                        user.put("UserNick", UserNick);
-                                        user.put("UserName", UserName);
-                                        user.put("UserHeadImg", UserHeadImg);
-                                        user.put("UserSex", UserSex);
-                                        userArray.put(user);
-                                        String userJsonStr = userArray.toString();
-                                        LocalDataObj.SetUserLocalData("LocalUserJson", userJsonStr);
+                                            Json = Json.getJSONObject("Data");
+                                            String uid = Json.getString("UserId");
+                                            String Code = Json.getString("Code");
+                                            String UserNick = Json.getString("UserNick");
+                                            String UserName = Json.getString("UserName");
+                                            String UserHeadImg = Json.getString("UserHeadImg");
+                                            String UserSex = Json.getString("UserSex");
+                                            LocalDataObj.SetUserLocalData("UserID", uid);
+                                            LocalDataObj.SetUserLocalData("UserToken", Code);
+                                            LocalDataObj.SetUserLocalData("UserNick", UserNick);
+                                            LocalDataObj.SetUserLocalData("UserHeadImg", UserHeadImg);
+                                            LocalDataObj.SetUserLocalData("UserSex", UserSex);
+
+                                            String jsonStr = LocalDataObj.GetUserLocalData("LocalUserJson");
+                                            JSONArray userArray;
+                                            if (jsonStr.equalsIgnoreCase("") == true) {
+                                                userArray = new JSONArray();
+                                            } else {
+                                                userArray = JsonUtils.Str2JsonArray(jsonStr);
+                                            }
+                                            JSONObject user = new JSONObject();
+                                            user.put("UserID", uid);
+                                            user.put("Code", Code);
+                                            user.put("UserNick", UserNick);
+                                            user.put("UserName", UserName);
+                                            user.put("UserHeadImg", UserHeadImg);
+                                            user.put("UserSex", UserSex);
+                                            userArray.put(user);
+                                            String userJsonStr = userArray.toString();
+                                            LocalDataObj.SetUserLocalData("LocalUserJson", userJsonStr);
+
+
                                     } catch (JSONException e) {
                                         LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
                                     }
 
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("ChangeState", 2);
+                                getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
 
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt("ChangeState", 2);
-                                    getActivity().setResult(Activity.RESULT_CANCELED, getActivity().getIntent().putExtras(bundle));
+                                Message MSG = new Message();
+                                MSG.arg1 = 1;
+                                updateHandler.sendMessage(MSG);
 
-                                    Message MSG = new Message();
-                                    MSG.arg1 = 1;
-                                    updateHandler.sendMessage(MSG);
                                 }
                             }.start();
                             break;

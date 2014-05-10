@@ -70,6 +70,7 @@ public class MainActivity extends BaseListMenu {
     public static int shakecount;
     public String startName;
     public static String usercountUrl;
+    public int select_menu_index;
     private Handler NetWorkhandler = new Handler() {
         @Override
 //当有消息发送出来的时候就执行Handler的这个方法
@@ -183,7 +184,9 @@ public class MainActivity extends BaseListMenu {
 
                     break;
                 case R.id.bt_openmenu:
+
                     mMenuDrawer.openMenu();
+
                     getNewsCounts();//这个是得到个人中心的counts
                     break;
                 default:
@@ -269,29 +272,31 @@ public class MainActivity extends BaseListMenu {
         obj_web.requestFocus();
         WebSettings mWebSetting = obj_web.getSettings();
         mWebSetting.setJavaScriptEnabled(true);
-        mWebSetting.setUseWideViewPort(true);
+//        mWebSetting.setUseWideViewPort(true);
         mWebSetting.setDefaultTextEncodingName("UTF-8");
-        mWebSetting.setLoadWithOverviewMode(true);
+//        mWebSetting.setLoadWithOverviewMode(true);
 
-        mWebSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
-        mWebSetting.setAppCacheMaxSize(1024 * 1024 * 8);
-        String appCacheDir = this.getApplicationContext().getDir("cache", Context.MODE_PRIVATE).getPath();
-        mWebSetting.setAppCachePath(appCacheDir);
-        mWebSetting.setAllowFileAccess(true);
-        mWebSetting.setAppCacheEnabled(true);
+//        mWebSetting.setCacheMode(WebSettings.LOAD_DEFAULT);
+//        mWebSetting.setAppCacheMaxSize(1024 * 1024 * 8);
+//        String appCacheDir = this.getApplicationContext().getDir("cache", Context.MODE_PRIVATE).getPath();
+//        mWebSetting.setAppCachePath(appCacheDir);
+//        mWebSetting.setAllowFileAccess(true);
+//        mWebSetting.setAppCacheEnabled(true);
+//        //设置加载进来的页面自适应手机屏幕
+//        mWebSetting.setUseWideViewPort(true);
+//        mWebSetting.setLoadWithOverviewMode(true);
+//
+//        mWebSetting.setJavaScriptCanOpenWindowsAutomatically(true);
+//        mWebSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
 
-        mWebSetting.setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
-
-        mWebSetting.setSupportZoom(false);
-        mWebSetting.setBuiltInZoomControls(false);
-        mWebSetting.setGeolocationEnabled(true);
-        mWebSetting.setDatabaseEnabled(true);
-        String dir = this.getApplicationContext()
-                .getDir("database", Context.MODE_PRIVATE).getPath();
-        mWebSetting.setDatabasePath(dir);
-        mWebSetting.setDomStorageEnabled(true);
-        obj_web.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+//        mWebSetting.setSupportZoom(false);
+//        mWebSetting.setBuiltInZoomControls(false);
+//        mWebSetting.setGeolocationEnabled(true);
+//        mWebSetting.setDatabaseEnabled(true);
+//        String dir = this.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
+//        mWebSetting.setDatabasePath(dir);
+//        mWebSetting.setDomStorageEnabled(true);
+//        obj_web.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         obj_web.addJavascriptInterface(new JavaScriptInterface(), "javatojs");
         obj_web.setWebChromeClient(new UserWebClient());
         obj_web.setWebViewClient(new NormalWebViewClient(this));
@@ -476,6 +481,7 @@ public class MainActivity extends BaseListMenu {
                     break;
                 case 5://获取摇一摇的次数
                     shakecount = msg.arg2;
+                    break;
             }
         }
     };
@@ -494,87 +500,94 @@ public class MainActivity extends BaseListMenu {
 
         Rightbutton.setVisibility(View.GONE);
         ButtonText.setVisibility(View.GONE);
+        View view =LayoutInflater.from(MainActivity.this).inflate(R.layout.menu_row_category, null, false);
+        View view1 =LayoutInflater.from(MainActivity.this).inflate(R.layout.menu_row_item, null, false);
+        view.setVisibility(View.GONE);
+        view1.setVisibility(View.GONE);
+        mMenuDrawer.closeMenu();
 
-        switch (position) {
-            case 0:    //中超资讯
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.MainView) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.maintitle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.BOTH);
-                break;
-            case 1:    //中超竞猜
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.jingcai_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.jingcaititle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+        select_menu_index = position;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                switch (select_menu_index) {
+                    case 0:    //中超资讯
+                        obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.MainView) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                        titleView.setText(R.string.maintitle);
+                        p_PushInstance.setMode(PullToRefreshBase.Mode.BOTH);
+                        break;
+                    case 1:    //中超竞猜
+                        obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.jingcai_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                        titleView.setText(R.string.jingcaititle);
+                        p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
 
-                Rightbutton.setVisibility(View.VISIBLE);
-                ButtonText.setVisibility(View.VISIBLE);
-                // ButtonText.setText(R.string.string2);
-                ButtonText.setText("");
+                        Rightbutton.setVisibility(View.VISIBLE);
+                        ButtonText.setVisibility(View.VISIBLE);
+                        // ButtonText.setText(R.string.string2);
+                        ButtonText.setText("");
 
-                break;
-            case 2:    //中超球队
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiudui_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.quiduititle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
-                break;
-            case 3:    //语音聊球
-            {
-                String uid = LocalDataObj.GetUserLocalData("UserID");
-                if (uid.equalsIgnoreCase("100") == true) {   //说明是游客用户
-                    Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                    intent.putExtra(MainFragment.EXTRA_VIEW_URL, ExampleApplication.GetInstance().getString(R.string.denglu_view));
-                    intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                        break;
+                    case 2:    //中超球队
+                        obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiudui_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                        titleView.setText(R.string.quiduititle);
+                        p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                        break;
+                    case 3:    //语音聊球
+                    {
+                        String uid = LocalDataObj.GetUserLocalData("UserID");
+                        if (uid.equalsIgnoreCase("100") == true) {   //说明是游客用户
+                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, ExampleApplication.GetInstance().getString(R.string.denglu_view));
+                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
 
-                    startActivityForResult(intent, 0);
-                } else {
-                    //LocalDataObj.GetUserLocalData("UserHeadImg")  LocalDataObj.GetUserLocalData("UserID")  LocalDataObj.GetUserLocalData("UserNick")  LocalDataObj.GetUserLocalData("UserSex")
-                    Bitmap head = BitmapFactory.decodeResource(getResources(),
-                            R.drawable.ic_launcher);
+                            startActivityForResult(intent, 0);
+                        } else {
+                            //LocalDataObj.GetUserLocalData("UserHeadImg")  LocalDataObj.GetUserLocalData("UserID")  LocalDataObj.GetUserLocalData("UserNick")  LocalDataObj.GetUserLocalData("UserSex")
+                            Bitmap head = BitmapFactory.decodeResource(getResources(),
+                                    R.drawable.ic_launcher);
 //                    returnBitMap(ExampleApplication.GetInstance().getString(R.string.MainIP)+LocalDataObj.GetUserLocalData("UserHeadImg"))
-                    GotyeSDK.getInstance().startGotyeSDK(this,
-                            LocalDataObj.GetUserLocalData("UserID"),
-                            LocalDataObj.GetUserLocalData("UserNick"),
-                            GotyeSex.NOT_SET,
-                            head,
-                            null);
-                }
-            }
-            break;
-            case 4:    //趣味竞猜
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.quweijingcai_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.quweijingcaititle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
-                break;
-            case 5:    //摇球星卡
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiuxingka_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.qiuxingkatitle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
-                break;
+                            GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, head, null);
+                        }
+                    }
+                    break;
+                    case 4:    //趣味竞猜
+                        obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.quweijingcai_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                        titleView.setText(R.string.quweijingcaititle);
+                        p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                        break;
+                    case 5:    //摇球星卡
+                        obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.qiuxingka_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                        titleView.setText(R.string.qiuxingkatitle);
+                        p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                        break;
 
-            case 6:    //个人中心
-                String uid = LocalDataObj.GetUserLocalData("UserID");
-                if (uid.equalsIgnoreCase("100") == true) {   //说明是游客用户
-                    Intent intent = new Intent(MainActivity.this, MainFragment.class);
-                    intent.putExtra(MainFragment.EXTRA_VIEW_URL, ExampleApplication.GetInstance().getString(R.string.denglu_view));
-                    intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                    case 6:    //个人中心
+                        String uid = LocalDataObj.GetUserLocalData("UserID");
+                        if (uid.equalsIgnoreCase("100") == true) {   //说明是游客用户
+                            Intent intent = new Intent(MainActivity.this, MainFragment.class);
+                            intent.putExtra(MainFragment.EXTRA_VIEW_URL, ExampleApplication.GetInstance().getString(R.string.denglu_view));
+                            intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
 
 //                         startActivity(intent);
-                    startActivityForResult(intent, 0);
-                } else {
-                    String sUrl = ExampleApplication.GetInstance().getString(R.string.gerenzhongxin_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken");
-                    obj_web.loadUrl(sUrl);
-                    titleView.setText(R.string.gerenzhongxintitle);
-                    p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                            startActivityForResult(intent, 0);
+                        } else {
+                            String sUrl = ExampleApplication.GetInstance().getString(R.string.gerenzhongxin_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken");
+                            obj_web.loadUrl(sUrl);
+                            titleView.setText(R.string.gerenzhongxintitle);
+                            p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                        }
+                        break;
+                    case 7:    //关于我们
+                        obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.guanyuwomen_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
+                        titleView.setText(R.string.guanyuwomentitle);
+                        p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+                        break;
                 }
-                break;
-            case 7:    //关于我们
-                obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.guanyuwomen_view) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
-                titleView.setText(R.string.guanyuwomentitle);
-                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
-                break;
-        }
-        //
-        mMenuDrawer.closeMenu();
+            }
+        }, 500);
+
+        // mMenuDrawer.closeMenu();
+
     }
 
     public final static Bitmap returnBitMap(String url) {
@@ -635,6 +648,7 @@ public class MainActivity extends BaseListMenu {
         final int drawerState = mMenuDrawer.getDrawerState();
         if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
             mMenuDrawer.closeMenu();
+
             return;
         }
 
