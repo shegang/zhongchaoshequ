@@ -165,6 +165,20 @@ public class MainActivity extends BaseListMenu {
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mShakeListener != null){
+            mShakeListener.stop();//停止检测
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mShakeListener.start();
+    }
+
     View.OnClickListener button_listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -584,7 +598,7 @@ public class MainActivity extends BaseListMenu {
                         break;
                 }
             }
-        }, 500);
+        }, 50);
 
         // mMenuDrawer.closeMenu();
 

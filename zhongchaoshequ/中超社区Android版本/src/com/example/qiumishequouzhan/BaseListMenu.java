@@ -90,7 +90,7 @@ public abstract class BaseListMenu extends FragmentActivity implements MenuAdapt
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    MainActivity.GetWebView().scrollTo(0,1+(int)(Math.random()*60));
+                    MainActivity.GetWebView().scrollTo(0,1+(int)(Math.random()*50));
                 }
             }, 50);
         }

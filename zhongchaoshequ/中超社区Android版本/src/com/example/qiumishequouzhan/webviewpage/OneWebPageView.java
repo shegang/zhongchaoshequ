@@ -3,13 +3,14 @@ package com.example.qiumishequouzhan.webviewpage;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.*;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
@@ -17,11 +18,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.*;
 import android.widget.*;
 import com.devspark.progressfragment.ProgressFragment;
-import com.example.qiumishequouzhan.R;
 import com.example.qiumishequouzhan.ExampleApplication;
 import com.example.qiumishequouzhan.LocalDataObj;
 import com.example.qiumishequouzhan.MainView.MainActivity;
-
+import com.example.qiumishequouzhan.R;
 import com.example.qiumishequouzhan.Utils.*;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshWebView;
@@ -1327,7 +1327,13 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                                     Message MSG = new Message();
                                     MSG.arg1 = 13;
                                     updateHandler.sendMessage(MSG);
-                                } else {
+                                } else if(url.contains("PageUserInfo")){
+                                    Intent intent = new Intent(getActivity(), MainFragment.class);
+                                    intent.putExtra(MainFragment.EXTRA_VIEW_URL, url);
+                                    intent.putExtra(MainFragment.EXTRA_FRAGMENT, MainFragment.FRAGMENT_ONEPAGEWEBVIEW);
+                                    startActivity(intent);
+                                }
+                                else {
                                     mWebview.loadUrl(url);
                                 }
 

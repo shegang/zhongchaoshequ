@@ -1,15 +1,7 @@
 package com.example.qiumishequouzhan.Utils;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
-
-
 import android.app.Activity;
 import android.content.Context;
-
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,22 +10,16 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import com.example.qiumishequouzhan.R;
 import com.example.qiumishequouzhan.Constant;
 import com.example.qiumishequouzhan.LocalDataObj;
 import com.example.qiumishequouzhan.MainView.MainActivity;
-
+import com.example.qiumishequouzhan.R;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.bean.SocializeConfig;
 import com.umeng.socialize.bean.SocializeEntity;
 import com.umeng.socialize.bean.UMShareMsg;
-import com.umeng.socialize.controller.RequestType;
-import com.umeng.socialize.controller.UMInfoAgent;
-import com.umeng.socialize.controller.UMServiceFactory;
-import com.umeng.socialize.controller.UMSocialService;
-import com.umeng.socialize.controller.UMWXHandler;
+import com.umeng.socialize.controller.*;
 import com.umeng.socialize.controller.listener.SocializeListeners.SnsPostListener;
 import com.umeng.socialize.controller.listener.SocializeListeners.UMAuthListener;
 import com.umeng.socialize.controller.listener.SocializeListeners.UMDataListener;
@@ -43,6 +29,11 @@ import com.umeng.socialize.media.UMRichMedia;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 public class UMengUtils {
     /**
