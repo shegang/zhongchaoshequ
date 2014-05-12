@@ -107,8 +107,8 @@ public class UMengUtils {
             public void onComplete(Bundle value, SHARE_MEDIA arg1) {
                 // TODO Auto-generated method stub
                 if (value != null && !TextUtils.isEmpty(value.getString("uid"))) {
-                    UMSocialService controller = UMServiceFactory.getUMSocialService(MainActivity.class.getName(), RequestType.SOCIAL);
-                    controller.getPlatformInfo(MainActivity.GetInstance(), MediaName,
+                    UMSocialService controller = UMServiceFactory.getUMSocialService(context.getClass().getName(), RequestType.SOCIAL);
+                    controller.getPlatformInfo(context, MediaName,
                             new UMDataListener() {
                                 @Override
                                 public void onStart() {
@@ -146,14 +146,12 @@ public class UMengUtils {
                                                 return;
                                         }
 
-                                        AutoPostShare(MediaName);
+                                      //  AutoPostShare(MediaName);
                                         if (UserSex != 1) UserSex = 0;
                                         //[NSString stringWithFormat:@"%d%@%@%d",1,qqAccount.usid,qqAccount.userName,0]   JustDoIt~Test
 //                                        NSString*Code=[Tools md5:[NSString stringWithFormat:@"%d%@%@%d",1,qqAccount.usid,qqAccount.userName,0]];
 //                                        Code=[Tools md5:[NSString stringWithFormat:@"%@%@",Code,md5Key]];
                                         String s = OAuthType + UID + Usernick + UserSex;
-                                        String str1 = MD5("123123");//4297f44b13955235245b2497399d7a93
-                                        String str2 = MD5("111111");//96e79218965eb72c92a549dd5a330112
                                         final String Code = MD5(s);//0f3b6cfa26ccb96ef565a726183e1743JustDoIt~Test
                                         final String Code1 = MD5(Code + "JustDoIt~Test");//e8655b28359b5e888f651a842618018b
                                         final String uid = UID;
@@ -172,6 +170,14 @@ public class UMengUtils {
                                                 JSONObject Json = JsonUtils.Str2Json(Result);
                                                 try {
                                                     Json = Json.getJSONObject("d");
+                                                  int  errorCode = Json.getInt("Code");
+                                                    if (errorCode != 0) {
+                                                        Message MSG = new Message();
+                                                        MSG.arg1 = 14;
+                                                        MSG.arg2 = errorCode;
+                                                        updateHandle.sendMessage(MSG);
+                                                        return;
+                                                    }
                                                     Json = Json.getJSONObject("Data");
                                                     String Code = Json.getString("Code");
                                                     String uid = Json.getString("UserId");
@@ -222,7 +228,7 @@ public class UMengUtils {
                                 }
                             });
                 } else {
-                    Toast.makeText(MainActivity.GetInstance(), "授权失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "授权失败", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -249,7 +255,7 @@ public class UMengUtils {
             public void onError(SocializeException arg0,
                                 SHARE_MEDIA arg1) {
                 // TODO Auto-generated method stub
-                Toast.makeText(MainActivity.GetInstance(), "出错了.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "出错了.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -262,7 +268,7 @@ public class UMengUtils {
 
     public static void InitUMengConfig(Context context) {
         m_context = context;
-        UMSocialService controller = UMServiceFactory.getUMSocialService(m_context.getClass().getName(), RequestType.SOCIAL);
+        UMSocialService controller = UMServiceFactory.getUMSocialService(context.getClass().getName(), RequestType.SOCIAL);
         UMWXHandler.WX_APPID = Constant.APP_WEIXIN_ID;//设置微信的Appid
         UMWXHandler.WX_CONTENT_TITLE = Constant.APP_TITLE;
         UMWXHandler.WXCIRCLE_CONTENT_TITLE = Constant.APP_TITLE;
@@ -275,9 +281,9 @@ public class UMengUtils {
         config.setShareSms(false);
         config.setShareMail(false);
         //添加微信平台
-        config.supportWXPlatform(m_context);
+        config.supportWXPlatform(context);
         //添加微信朋友圈
-        config.supportWXPlatform(m_context, UMServiceFactory.getUMWXHandler(MainActivity.GetInstance()).setToCircle(true));
+        config.supportWXPlatform(context, UMServiceFactory.getUMWXHandler(MainActivity.GetInstance()).setToCircle(true));
         controller.openShare(context, false);
     }
 

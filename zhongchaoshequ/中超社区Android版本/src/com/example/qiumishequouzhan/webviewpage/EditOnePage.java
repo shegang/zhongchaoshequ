@@ -66,11 +66,13 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
         EditOnePage fragment = new EditOnePage();
         return fragment;
     }
+
     public static EditOnePage obj;
 
     public static EditOnePage GetInstance() {
         return obj;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,39 +145,39 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
                     if (time1 - time2 < 20000 && time2 > 0) {
                         Toast.makeText(getContentView().getContext(), "不能连续发送评论", Toast.LENGTH_LONG).show();
                         return;
-                    }else{
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            String webview_url = mWebview.getUrl();
-                            String Url = getString(R.string.serverurl) + "/InsertEvaluate";
-                            byte[] data = null;
-                            time2 = System.currentTimeMillis();
-                            if (webview_url.contains("EvaluatePage")) {//这个是竞猜评论管理中的发送
-                                data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
-                                        "\"ID\":" + sNewsID + ", \"evalContent\":'" + commenttext + "'," +
-                                        " \"parentID\":" + EvalID + ",\"EvalType\":\"C\"}");
-                            } else if (webview_url.contains("SelectNews")) {
-                                data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
-                                        "\"ID\":" + sNewsID + ", \"evalContent\":'" + commenttext + "'," +
-                                        " \"parentID\":" + EvalID + ",\"EvalType\":\"N\"}");
-                            }
+                    } else {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                String webview_url = mWebview.getUrl();
+                                String Url = getString(R.string.serverurl) + "/InsertEvaluate";
+                                byte[] data = null;
+                                time2 = System.currentTimeMillis();
+                                if (webview_url.contains("EvaluatePage")) {//这个是竞猜评论管理中的发送
+                                    data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
+                                            "\"ID\":" + sNewsID + ", \"evalContent\":'" + commenttext + "'," +
+                                            " \"parentID\":" + EvalID + ",\"EvalType\":\"C\"}");
+                                } else if (webview_url.contains("SelectNews")) {
+                                    data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                                            " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"," +
+                                            "\"ID\":" + sNewsID + ", \"evalContent\":'" + commenttext + "'," +
+                                            " \"parentID\":" + EvalID + ",\"EvalType\":\"N\"}");
+                                }
 
-                            String Result = FileUtils.Bytes2String(data);
-                            JSONObject Json = JsonUtils.Str2Json(Result);
-                            try {
-                                Json = Json.getJSONObject("d");
-                            } catch (JSONException e) {
-                                LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
-                            }
-                            Message MSG = new Message();
-                            MSG.arg1 = 3;
-                            updateHandler.sendMessage(MSG);
+                                String Result = FileUtils.Bytes2String(data);
+                                JSONObject Json = JsonUtils.Str2Json(Result);
+                                try {
+                                    Json = Json.getJSONObject("d");
+                                } catch (JSONException e) {
+                                    LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+                                }
+                                Message MSG = new Message();
+                                MSG.arg1 = 3;
+                                updateHandler.sendMessage(MSG);
 
-                        }
-                    }.start();
+                            }
+                        }.start();
 
                     }
                     break;
@@ -542,7 +544,7 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
                 case 5://添加分享平台和内容
                     UMengUtils.InitUMengConfig(mContentView.getContext());//添加分享平台
                     UMengUtils.ShareContent(shareCount);//添加分享能容
-                    share();
+                    //share();
                     break;
                 case 6://新闻分享
 //                    shareCount = objectParams.getString("Title");
@@ -556,26 +558,27 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
             }
         }
     };
-public void share(){
-    new Thread() {
-        @Override
-        public void run() {
-            //你要执行的方法
-            //执行完毕后给handler发送一个空消息
-            String Url = getString(R.string.serverurl) + "/ShareContent";
-            byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
-                    " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"}");
-            String Result = FileUtils.Bytes2String(data);
-            JSONObject Json = JsonUtils.Str2Json(Result);
-            try {
-                Json = Json.getJSONObject("d");
-                Json = Json.getJSONObject("Data");
-            } catch (JSONException e) {
-                LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+
+    public void share() {
+        new Thread() {
+            @Override
+            public void run() {
+                //你要执行的方法
+                //执行完毕后给handler发送一个空消息
+                String Url = getString(R.string.serverurl) + "/ShareContent";
+                byte[] data = HttpUtils.GetWebServiceJsonContent(Url, "{\"UserId\":" + LocalDataObj.GetUserLocalData("UserID") + "," +
+                        " \"Code\":\"" + LocalDataObj.GetUserLocalData("UserToken") + "\"}");
+                String Result = FileUtils.Bytes2String(data);
+                JSONObject Json = JsonUtils.Str2Json(Result);
+                try {
+                    Json = Json.getJSONObject("d");
+                    Json = Json.getJSONObject("Data");
+                } catch (JSONException e) {
+                    LogUitls.WriteLog("FileUtils", "WriteFile2Store", Json.toString(), e);
+                }
             }
-        }
-    }.start();
-}
+        }.start();
+    }
 
     private void obtainData() {
         // Show indeterminate progress
