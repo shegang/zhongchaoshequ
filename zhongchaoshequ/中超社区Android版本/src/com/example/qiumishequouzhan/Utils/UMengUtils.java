@@ -283,7 +283,7 @@ public class UMengUtils {
         //添加微信平台
         config.supportWXPlatform(context);
         //添加微信朋友圈
-        config.supportWXPlatform(context, UMServiceFactory.getUMWXHandler(context).setToCircle(true));
+        config.supportWXPlatform(context, UMServiceFactory.getUMWXHandler(MainActivity.GetInstance()).setToCircle(true));
         controller.openShare(context, false);
     }
 
@@ -311,7 +311,7 @@ public class UMengUtils {
         controller.setShareContent(Content);
 
         if (URL == null || URL.equals("") == true) {
-            controller.setShareMedia(new UMImage(m_context, BitmapFactory.decodeResource(m_context.getResources(), R.drawable.ic_launcher)));//设置分享图片内容
+            controller.setShareMedia(new UMImage(MainActivity.GetInstance(), BitmapFactory.decodeResource(MainActivity.GetInstance().getResources(), R.drawable.ic_launcher)));//设置分享图片内容
         } else {
             new Thread(
                     new Runnable() {
@@ -325,7 +325,7 @@ public class UMengUtils {
                                 URLPIC = BitmapFactory.decodeByteArray(BitArray, 0, BitArray.length);
                             }
 
-                            controller.setShareMedia(new UMImage(m_context, URLPIC));//设置分享图片内容
+                            controller.setShareMedia(new UMImage(MainActivity.GetInstance(), URLPIC));//设置分享图片内容
                         }
                     }).start();
         }
