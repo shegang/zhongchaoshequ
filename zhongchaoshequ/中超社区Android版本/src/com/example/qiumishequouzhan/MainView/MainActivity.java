@@ -4,10 +4,8 @@ package com.example.qiumishequouzhan.MainView;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -17,13 +15,17 @@ import android.telephony.TelephonyManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
-import android.webkit.*;
-import android.widget.*;
-import com.example.qiumishequouzhan.R;
+import android.webkit.DownloadListener;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.example.qiumishequouzhan.*;
 import com.example.qiumishequouzhan.Utils.*;
 import com.example.qiumishequouzhan.webviewpage.MainFragment;
-import com.example.qiumishequouzhan.webviewpage.OneWebPageView;
 import com.gotye.bean.GotyeSex;
 import com.gotye.sdk.GotyeSDK;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -31,15 +33,14 @@ import com.handmark.pulltorefresh.library.PullToRefreshWebView;
 import com.umeng.fb.FeedbackAgent;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
 
 public class MainActivity extends BaseListMenu {
@@ -71,6 +72,7 @@ public class MainActivity extends BaseListMenu {
     public String startName;
     public static String usercountUrl;
     public int select_menu_index;
+    public Bitmap headimg ;
     private Handler NetWorkhandler = new Handler() {
         @Override
 //当有消息发送出来的时候就执行Handler的这个方法
@@ -557,12 +559,16 @@ public class MainActivity extends BaseListMenu {
                             startActivityForResult(intent, 0);
                         } else {
                             //LocalDataObj.GetUserLocalData("UserHeadImg")  LocalDataObj.GetUserLocalData("UserID")  LocalDataObj.GetUserLocalData("UserNick")  LocalDataObj.GetUserLocalData("UserSex")
-                            Bitmap head = BitmapFactory.decodeResource(getResources(),
-                                    R.drawable.ic_launcher);
+                           // Bitmap head = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
 //                    returnBitMap(ExampleApplication.GetInstance().getString(R.string.MainIP)+LocalDataObj.GetUserLocalData("UserHeadImg"))
                             String UserNick = LocalDataObj.GetUserLocalData("UserNick");
                             String UserHeadImg = LocalDataObj.GetUserLocalData("UserHeadImg");
-                            GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, head, null);
+                           String updown = getString(R.string.BaseIP) + UserHeadImg;
+                            downloadImageByAsyncTask(updown);
+                            /*if(headimg == null){
+                                headimg = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+                            }
+                            GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, headimg, null);*/
                         }
                     }
                     break;
@@ -606,29 +612,75 @@ public class MainActivity extends BaseListMenu {
 
     }
 
-    public final static Bitmap returnBitMap(String url) {
-        URL myFileUrl = null;
-        Bitmap bitmap = null;
+ private void downloadImageByAsyncTask(final String url) {
 
-        try {
-            myFileUrl = new URL(url);
-            HttpURLConnection conn;
+        AsyncTask<String, Integer, Boolean> asyncTask = new AsyncTask<String, Integer, Boolean>() {
+            private String filePath = null;
 
-            conn = (HttpURLConnection) myFileUrl.openConnection();
+            @Override
+            protected void onProgressUpdate(Integer... values) {
 
-            conn.setDoInput(true);
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            bitmap = BitmapFactory.decodeStream(is);
+            }
 
-        } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return bitmap;
+            @Override
+            protected Boolean doInBackground(String... params) {
+                try {
+
+                    String downloadUrl = params[0];
+                    HttpGet request = new HttpGet(downloadUrl);
+
+                    DefaultHttpClient httpClient = new DefaultHttpClient();
+
+                    HttpResponse response = null;
+
+                    response = httpClient.execute(request);
+
+                    InputStream inputStream = response.getEntity().getContent();
+                    filePath = Environment.getExternalStorageDirectory().getPath() + "/Head.jpg";
+                    FileOutputStream outputStream = new FileOutputStream(filePath);
+
+                    byte[] buf = new byte[1024];
+
+                    int length;
+                    while ((length = inputStream.read(buf)) != -1) {
+                        outputStream.write(buf, 0, length);
+
+                        publishProgress(length);
+                    }
+
+                    outputStream.close();
+                    inputStream.close();
+                } catch (IOException e) {
+                    Log.d("TAG", "运气不太好，异常了", e);
+                    return false;
+                }
+
+                return true;
+            }
+
+            //该方法运行在UI线程当中,并且运行在UI线程当中 可以对UI空间进行设置
+            @Override
+            protected void onPreExecute() {
+                // dialog.show();//开始
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+
+                if (result) {
+
+                   // Uri uri = Uri.fromFile(new File(filePath));
+                     headimg = BitmapFactory.decodeFile(filePath, null);
+                    if(headimg == null){
+                        headimg = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+                    }
+                    GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, headimg, null);
+                } else {
+                    headimg = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+                }
+            }
+        };
+        asyncTask.execute(url);
     }
 
     @Override
