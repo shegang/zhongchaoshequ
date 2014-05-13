@@ -168,7 +168,7 @@ public class MainActivity extends BaseListMenu {
     @Override
     protected void onStop() {
         super.onStop();
-        if(mShakeListener != null){
+        if (mShakeListener != null) {
             mShakeListener.stop();//停止检测
         }
     }
@@ -514,11 +514,11 @@ public class MainActivity extends BaseListMenu {
 
         Rightbutton.setVisibility(View.GONE);
         ButtonText.setVisibility(View.GONE);
-        View view =LayoutInflater.from(MainActivity.this).inflate(R.layout.menu_row_category, null, false);
-        View view1 =LayoutInflater.from(MainActivity.this).inflate(R.layout.menu_row_item, null, false);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.menu_row_category, null, false);
+        View view1 = LayoutInflater.from(MainActivity.this).inflate(R.layout.menu_row_item, null, false);
         view.setVisibility(View.GONE);
         view1.setVisibility(View.GONE);
-        mMenuDrawer.closeMenu();
+        // mMenuDrawer.closeMenu();
 
         select_menu_index = position;
         new Handler().postDelayed(new Runnable() {
@@ -560,6 +560,8 @@ public class MainActivity extends BaseListMenu {
                             Bitmap head = BitmapFactory.decodeResource(getResources(),
                                     R.drawable.ic_launcher);
 //                    returnBitMap(ExampleApplication.GetInstance().getString(R.string.MainIP)+LocalDataObj.GetUserLocalData("UserHeadImg"))
+                            String UserNick = LocalDataObj.GetUserLocalData("UserNick");
+                            String UserHeadImg = LocalDataObj.GetUserLocalData("UserHeadImg");
                             GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, head, null);
                         }
                     }
@@ -600,7 +602,7 @@ public class MainActivity extends BaseListMenu {
             }
         }, 50);
 
-        // mMenuDrawer.closeMenu();
+        mMenuDrawer.closeMenu();
 
     }
 

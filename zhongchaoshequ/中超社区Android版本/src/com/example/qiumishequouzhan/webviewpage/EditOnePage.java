@@ -547,12 +547,10 @@ public class EditOnePage extends ProgressFragment {    //R.id.one_page_webView
                     //share();
                     break;
                 case 6://新闻分享
-//                    shareCount = objectParams.getString("Title");
-//                    imgPath = objectParams.getString("NewsImg");
-//                    pathURL = objectParams.getString("Url");
-                    //  UMengUtils.InitUMengConfig(mContentView.getContext());//添加分享平台
                     UMengUtils.InitUMengConfig(mContentView.getContext());
-                    UMengUtils.ShareContent(shareCount, ExampleApplication.GetInstance().getString(R.string.BaseIP) + imgPath, ExampleApplication.GetInstance().getString(R.string.BaseIP) + pathURL);//添加分享能容
+                    UMengUtils.ShareContent(shareCount, ExampleApplication.GetInstance().getString(R.string.BaseIP) + imgPath,
+                            ExampleApplication.GetInstance().getString(R.string.BaseIP) + pathURL);//添加分享能容
+
                     share();
                     break;
             }

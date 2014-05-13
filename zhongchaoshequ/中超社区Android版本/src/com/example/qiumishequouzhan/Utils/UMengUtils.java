@@ -299,34 +299,31 @@ public class UMengUtils {
     }
 
     public static void ShareContent(String Content, final String URL, final String weburl) {
+
         if (Content.length() > 80) {
             Content = Content.substring(0, 80);
             Content = Content + "......";
         }
+        final UMSocialService controller = UMServiceFactory.getUMSocialService(m_context.getClass().getName(), RequestType.SOCIAL);
         if (weburl != null) {
             UMWXHandler.CONTENT_URL = weburl;
+            Content = Content + "[分享自@中超社区] 阅读全文：" + UMWXHandler.CONTENT_URL;
+            controller.setShareContent(Content);
+
         }
-
-        Content = Content + "[分享自@中超社区] 阅读全文：" + UMWXHandler.CONTENT_URL;
-
-        final UMSocialService controller = UMServiceFactory.getUMSocialService(m_context.getClass().getName(), RequestType.SOCIAL);
-        controller.setShareContent(Content);
-
         if (URL == null || URL.equals("") == true) {
             controller.setShareMedia(new UMImage(MainActivity.GetInstance(), BitmapFactory.decodeResource(MainActivity.GetInstance().getResources(), R.drawable.ic_launcher)));//设置分享图片内容
+
         } else {
             new Thread(
                     new Runnable() {
                         @Override
                         public void run() {
                             byte[] BitArray = HttpUtils.GetURLContent(URL);
-
                             Bitmap URLPIC = null;
-
                             if (BitArray != null) {
                                 URLPIC = BitmapFactory.decodeByteArray(BitArray, 0, BitArray.length);
                             }
-
                             controller.setShareMedia(new UMImage(MainActivity.GetInstance(), URLPIC));//设置分享图片内容
                         }
                     }).start();
