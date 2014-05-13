@@ -94,7 +94,7 @@ public class UMengUtils {
      * 用户授权部分
      */
     public static void SSOLogin(final SHARE_MEDIA MediaName, final Handler updateHandle, final Activity context) {
-        UMSocialService controller = UMServiceFactory.getUMSocialService(context.getLocalClassName().getClass().getName(), RequestType.SOCIAL);
+        UMSocialService controller = UMServiceFactory.getUMSocialService(context.getClass().getName(), RequestType.SOCIAL);
 
         controller.doOauthVerify(context, MediaName, new UMAuthListener() {
             @Override
@@ -224,6 +224,8 @@ public class UMengUtils {
                                         }.start();
 
 
+                                    }else{
+                                    Toast.makeText(context, "数据错误，登陆失败", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
