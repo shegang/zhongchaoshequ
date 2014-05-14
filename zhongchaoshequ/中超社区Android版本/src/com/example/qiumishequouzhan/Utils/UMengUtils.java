@@ -311,6 +311,7 @@ public class UMengUtils {
             controller.setShareContent(Content);
 
         }
+
         if (URL == null || URL.equals("") == true) {
             controller.setShareMedia(new UMImage(MainActivity.GetInstance(), BitmapFactory.decodeResource(MainActivity.GetInstance().getResources(), R.drawable.ic_launcher)));//设置分享图片内容
 

@@ -47,18 +47,14 @@ public class WelcomPage extends BaseActivity {
         if (splash == null) {
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.qidong));
         } else {
-            if(firstFlag.equals("")){
-                imageView.setImageDrawable(getResources().getDrawable(R.drawable.qidong));
-            }else{
-                imageView.setImageDrawable(splash);
-            }
+            imageView.setImageDrawable(splash);
         }
         // 存储数据程序（程序是否是第一次运行）
         // FILENMAE 文件名称，一xml形式，存放在/data/data/<程序包名>/xxxx.xml
         // Activity.MODE_PRIVATE：文件保存模式，即访问权限
 
 
-        SharedPreferences share = super.getSharedPreferences(FILENMAE, Activity.MODE_PRIVATE);
+       // SharedPreferences share = super.getSharedPreferences(FILENMAE, Activity.MODE_PRIVATE);
         firstFlag = LocalDataObj.GetUserLocalData("firstFlag");//share.getBoolean("firstFlag", true); // 默认false
         if (firstFlag.equals("")) { // 第一次运行
             intent = new Intent(this, GuidPage.class);

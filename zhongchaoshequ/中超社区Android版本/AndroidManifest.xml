@@ -119,6 +119,8 @@
                 android:name="UMENG_APPKEY"
                 android:value="50f42f735270156ccf0000f0">
         </meta-data>
+        <!--UMENG统计-->
+        <meta-data android:value="BaiDu_Market" android:name="UMENG_CHANNEL"/>
         <meta-data
                 android:name="UMENG_CHANNEL"
                 android:value="BaiDu_Market"/>

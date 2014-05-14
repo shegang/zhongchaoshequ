@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.*;
 import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
+
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.*;
@@ -23,6 +25,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.qiumishequouzhan.*;
 import com.example.qiumishequouzhan.Utils.*;
 import com.example.qiumishequouzhan.webviewpage.MainFragment;
@@ -30,6 +33,7 @@ import com.gotye.bean.GotyeSex;
 import com.gotye.sdk.GotyeSDK;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshWebView;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.fb.FeedbackAgent;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
@@ -41,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.util.Set;
 
 
 public class MainActivity extends BaseListMenu {
@@ -72,7 +77,7 @@ public class MainActivity extends BaseListMenu {
     public String startName;
     public static String usercountUrl;
     public int select_menu_index;
-    public Bitmap headimg ;
+    public Bitmap headimg;
     private Handler NetWorkhandler = new Handler() {
         @Override
 //当有消息发送出来的时候就执行Handler的这个方法
@@ -167,6 +172,39 @@ public class MainActivity extends BaseListMenu {
 
     }
 
+
+    //获取umeng统计测试设备信息
+
+    public static String getDeviceInfo(Context context) {
+        try{
+            org.json.JSONObject json = new org.json.JSONObject();
+            android.telephony.TelephonyManager tm = (android.telephony.TelephonyManager) context
+                    .getSystemService(Context.TELEPHONY_SERVICE);
+
+            String device_id = tm.getDeviceId();
+
+            android.net.wifi.WifiManager wifi = (android.net.wifi.WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+            String mac = wifi.getConnectionInfo().getMacAddress();
+            json.put("mac", mac);
+            Log.d("MAC",mac);
+            if( TextUtils.isEmpty(device_id) ){
+                device_id = mac;
+            }
+
+            if( TextUtils.isEmpty(device_id) ){
+                device_id = android.provider.Settings.Secure.getString(context.getContentResolver(),android.provider.Settings.Secure.ANDROID_ID);
+            }
+
+            json.put("device_id", device_id);
+
+            return json.toString();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -174,11 +212,16 @@ public class MainActivity extends BaseListMenu {
             mShakeListener.stop();//停止检测
         }
     }
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);//umeng统计
+    }
     @Override
     protected void onResume() {
         super.onResume();
         mShakeListener.start();
+        MobclickAgent.onResume(this);          //umeng统计时长
     }
 
     View.OnClickListener button_listener = new View.OnClickListener() {
@@ -215,9 +258,9 @@ public class MainActivity extends BaseListMenu {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         isInMainView = true;
         p_MainActivity = this;
+        getDeviceInfo(this);//获取测试设备信息，进行umeng统计分析
         mMenuDrawer.setContentView(R.layout.main);
         mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_FULLSCREEN);
         mMenuDrawer.setSlideDrawable(R.drawable.ic_drawer);
@@ -443,6 +486,7 @@ public class MainActivity extends BaseListMenu {
     public void SendCallBack(String path) {
         String Url = "javascript:SetHeadPhoto(\"" + path + "\")";
         obj_web.loadUrl(Url);
+        LocalDataObj.SetUserLocalData("UserHeadImg", path);//将此图像设置并保存到本地
     }
 
     public boolean onKeyDown(int keyCoder, KeyEvent event) {
@@ -559,12 +603,12 @@ public class MainActivity extends BaseListMenu {
                             startActivityForResult(intent, 0);
                         } else {
                             //LocalDataObj.GetUserLocalData("UserHeadImg")  LocalDataObj.GetUserLocalData("UserID")  LocalDataObj.GetUserLocalData("UserNick")  LocalDataObj.GetUserLocalData("UserSex")
-                           // Bitmap head = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+                            // Bitmap head = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
 //                    returnBitMap(ExampleApplication.GetInstance().getString(R.string.MainIP)+LocalDataObj.GetUserLocalData("UserHeadImg"))
                             String UserNick = LocalDataObj.GetUserLocalData("UserNick");
                             String UserHeadImg = LocalDataObj.GetUserLocalData("UserHeadImg");
-                           String updown = getString(R.string.BaseIP) + UserHeadImg;
-                            downloadImageByAsyncTask(updown);
+                            String download = getString(R.string.BaseIP) + UserHeadImg;
+                            downloadImageByAsyncTask(download);
                             /*if(headimg == null){
                                 headimg = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
                             }
@@ -612,7 +656,7 @@ public class MainActivity extends BaseListMenu {
 
     }
 
- private void downloadImageByAsyncTask(final String url) {
+    private void downloadImageByAsyncTask(final String url) {
 
         AsyncTask<String, Integer, Boolean> asyncTask = new AsyncTask<String, Integer, Boolean>() {
             private String filePath = null;
@@ -669,14 +713,14 @@ public class MainActivity extends BaseListMenu {
 
                 if (result) {
 
-                   // Uri uri = Uri.fromFile(new File(filePath));
-                     headimg = BitmapFactory.decodeFile(filePath, null);
-                    if(headimg == null){
-                        headimg = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+                    // Uri uri = Uri.fromFile(new File(filePath));
+                    headimg = BitmapFactory.decodeFile(filePath, null);
+                    if (headimg == null) {
+                        headimg = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
                     }
                     GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, headimg, null);
                 } else {
-                    headimg = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+                    headimg = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
                 }
             }
         };
@@ -765,7 +809,8 @@ public class MainActivity extends BaseListMenu {
                                 String a[] = url.split("\\?");
                                 url = url + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken");
                                 obj_web.loadUrl(url);
-                                p_PushInstance.setMode(PullToRefreshBase.Mode.DISABLED);
+
+                               ExampleApplication.GetInstance().SetJpushAlias(LocalDataObj.GetUserLocalData("UserID"));
                                 break;
                             case 3:   //普通返回不需要处理
                                 String uri = obj_web.getUrl();

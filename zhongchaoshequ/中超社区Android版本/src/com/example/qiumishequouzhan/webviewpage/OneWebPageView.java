@@ -824,7 +824,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 }
                 break;
                 case 14:
-                    errorCode = msg.arg2;
+                   // errorCode = msg.arg2;
                     alertTips("1");
                     break;
             }

@@ -17,6 +17,7 @@ import com.example.qiumishequouzhan.LocalDataObj;
 import com.example.qiumishequouzhan.R;
 import com.example.qiumishequouzhan.Utils.*;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.umeng.analytics.MobclickAgent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,16 +90,14 @@ public class MainFragment extends FragmentActivity {
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
+        MobclickAgent.onResume(this);//umeng统计时长
     }
 
-  /*  @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            fragment.getActivity().finish();
-            UMengUtils.InitUMengConfig(fragment.getActivity());
-        }
-        return super.onKeyDown(keyCode, event);
-    }*/
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

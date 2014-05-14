@@ -50,8 +50,6 @@ public class ExampleApplication extends Application {
                     logs = "Failed with errorCode = " + code;
                     Log.e(TAG, logs);
             }
-
-//            ExampleUtil.showToast(logs, getApplicationContext());
         }
     };
     private static final int MSG_SET_ALIAS = 1001;
@@ -63,7 +61,8 @@ public class ExampleApplication extends Application {
                 case MSG_SET_ALIAS:
                     Log.d(TAG, "Set alias in handler.");
                     // 调用 JPush 接口来设置别名。
-                    JPushInterface.setAliasAndTags(ExampleApplication.GetInstance(), (String) msg.obj, null, mAliasCallback);
+                   // JPushInterface.setAliasAndTags(ExampleApplication.GetInstance(), (String) msg.obj, null, mAliasCallback);
+                    JPushInterface.setAlias(ExampleApplication.GetInstance(),(String) msg.obj,mAliasCallback);
                     break;
                 default:
                     Log.i(TAG, "Unhandled msg - " + msg.what);
@@ -78,6 +77,7 @@ public class ExampleApplication extends Application {
         app = this;
         JPushInterface.setDebugMode(true); 	//??????????,????????????
         JPushInterface.init(this);     		// ????? JPush
+
 
         Bundle bundle = new Bundle();
         bundle.putString(GotyeSDK.PRO_APP_KEY, "524033b6-8cf9-4511-b44e-d897b2012fa8");
