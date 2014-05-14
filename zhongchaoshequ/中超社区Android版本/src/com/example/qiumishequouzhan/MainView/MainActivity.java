@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.*;
 import android.provider.MediaStore;
 import android.telephony.TelephonyManager;
-
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -25,7 +24,6 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.qiumishequouzhan.*;
 import com.example.qiumishequouzhan.Utils.*;
 import com.example.qiumishequouzhan.webviewpage.MainFragment;
@@ -44,8 +42,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
-import java.util.Set;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 
 public class MainActivity extends BaseListMenu {
@@ -725,6 +725,7 @@ public class MainActivity extends BaseListMenu {
             }
         };
         asyncTask.execute(url);
+
     }
 
     @Override
@@ -809,7 +810,7 @@ public class MainActivity extends BaseListMenu {
                                 String a[] = url.split("\\?");
                                 url = url + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken");
                                 obj_web.loadUrl(url);
-
+                            //设置jpush推送的别名
                                ExampleApplication.GetInstance().SetJpushAlias(LocalDataObj.GetUserLocalData("UserID"));
                                 break;
                             case 3:   //普通返回不需要处理
@@ -919,6 +920,7 @@ public class MainActivity extends BaseListMenu {
                             //意见反馈的启动
                             FeedbackAgent agent = new FeedbackAgent(MainActivity.GetInstance());
                             agent.startFeedbackActivity();
+
                             break;
                         }
                         if (Name.equalsIgnoreCase("ShowSelectPic")) {//个人中心的图像上传接口

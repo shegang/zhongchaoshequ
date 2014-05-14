@@ -1,11 +1,16 @@
 package com.example.qiumishequouzhan.Utils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.view.Gravity;
+import android.widget.Toast;
 import com.example.qiumishequouzhan.Constant;
 import com.example.qiumishequouzhan.MainView.MainActivity;
 import org.apache.http.HttpEntity;
@@ -18,22 +23,11 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-
-import android.app.AlertDialog.Builder;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.view.Gravity;
-import android.widget.Toast;
+import java.io.*;
 
 
 public class UserPhotoUtils {
-    private static Builder p_AlertBuilder;
+
 
 
     public static Uri GetTempFileUri() {
@@ -41,6 +35,7 @@ public class UserPhotoUtils {
     }
 
     public static void StartUploadPhoto() {
+         Builder p_AlertBuilder = null;
 
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) == false) {
             Toast toast = Toast.makeText(MainActivity.GetInstance().getApplicationContext(), "没有SD卡！", Toast.LENGTH_LONG);
