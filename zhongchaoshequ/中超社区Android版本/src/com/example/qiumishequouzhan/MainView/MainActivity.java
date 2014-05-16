@@ -567,9 +567,11 @@ public class MainActivity extends BaseListMenu {
         // mMenuDrawer.closeMenu();
 
         select_menu_index = position;
+
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {
+
                 switch (select_menu_index) {
                     case 0:    //中超资讯
                         obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.MainView) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
@@ -650,7 +652,9 @@ public class MainActivity extends BaseListMenu {
                         break;
                 }
 //            }
+
 //        }, 50);
+
 
         mMenuDrawer.closeMenu();
 
@@ -721,6 +725,7 @@ public class MainActivity extends BaseListMenu {
                     GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, headimg, null);
                 } else {
                     headimg = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+                    GotyeSDK.getInstance().startGotyeSDK(MainActivity.this, LocalDataObj.GetUserLocalData("UserID"), LocalDataObj.GetUserLocalData("UserNick"), GotyeSex.NOT_SET, headimg, null);
                 }
             }
         };
