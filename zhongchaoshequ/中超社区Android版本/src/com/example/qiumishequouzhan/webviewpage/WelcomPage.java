@@ -74,7 +74,7 @@ public class WelcomPage extends BaseActivity {
                 WelcomPage.this.finish();
             }
         };
-        time.schedule(task, 2000);// 2秒进行跳转
+        time.schedule(task, 3000);// 3秒进行跳转
 
     }
 }

@@ -723,7 +723,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                    // startActivityForResult(intent, Activity.RESULT_CANCELED);
                     startActivity(intent);
                 }
-                    getActivity().finish();
+                 //   getActivity().finish();
                 break;
                 case 2:    //通知页面停止刷新
                     if (p_PushInstance.isRefreshing())
@@ -752,6 +752,7 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                 break;
                 case 6://注册以后的返回
                 {
+                    Toast.makeText(getContentView().getContext(),"注册登陆成功",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MainActivity.class);
                     startActivityForResult(intent, Activity.RESULT_CANCELED);
