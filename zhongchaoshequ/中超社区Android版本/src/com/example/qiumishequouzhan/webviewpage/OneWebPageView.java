@@ -755,9 +755,9 @@ public class OneWebPageView extends ProgressFragment {    //R.id.one_page_webVie
                     Toast.makeText(getContentView().getContext(),"注册登陆成功",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.setClass(getActivity(), MainActivity.class);
-                    startActivityForResult(intent, Activity.RESULT_CANCELED);
-                    /*startActivity(intent);
-                   getActivity().finish();*/
+//                    startActivityForResult(intent, Activity.RESULT_CANCELED);
+                    startActivity(intent);
+                   getActivity().finish();
                 }
                 break;
                 case 7://新增地址成功后跳转ChoosePlace页面

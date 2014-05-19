@@ -567,10 +567,8 @@ public class MainActivity extends BaseListMenu {
         // mMenuDrawer.closeMenu();
 
         select_menu_index = position;
-       /* new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {*/
-                switch (select_menu_index) {
+
+        switch (select_menu_index) {
                     case 0:    //中超资讯
                         obj_web.loadUrl(ExampleApplication.GetInstance().getString(R.string.MainView) + "?UserID=" + LocalDataObj.GetUserLocalData("UserID") + "&Code=" + LocalDataObj.GetUserLocalData("UserToken"));
                         titleView.setText(R.string.maintitle);
@@ -602,9 +600,7 @@ public class MainActivity extends BaseListMenu {
 
                             startActivityForResult(intent, 0);
                         } else {
-                            //LocalDataObj.GetUserLocalData("UserHeadImg")  LocalDataObj.GetUserLocalData("UserID")  LocalDataObj.GetUserLocalData("UserNick")  LocalDataObj.GetUserLocalData("UserSex")
-                            // Bitmap head = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
-//                    returnBitMap(ExampleApplication.GetInstance().getString(R.string.MainIP)+LocalDataObj.GetUserLocalData("UserHeadImg"))
+
                             String UserNick = LocalDataObj.GetUserLocalData("UserNick");
                             String UserHeadImg = LocalDataObj.GetUserLocalData("UserHeadImg");
                             String download = getString(R.string.BaseIP) + UserHeadImg;
@@ -650,7 +646,9 @@ public class MainActivity extends BaseListMenu {
                         break;
                 }
 //            }
-//        },50);
+
+//        }, 50);
+
 
         mMenuDrawer.closeMenu();
 
@@ -705,7 +703,6 @@ public class MainActivity extends BaseListMenu {
             //该方法运行在UI线程当中,并且运行在UI线程当中 可以对UI空间进行设置
             @Override
             protected void onPreExecute() {
-                // dialog.show();//开始
             }
 
             @Override

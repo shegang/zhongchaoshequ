@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -322,13 +323,32 @@ public class UMengUtils {
                         public void run() {
                             byte[] BitArray = HttpUtils.GetURLContent(URL);
                             Bitmap URLPIC = null;
+                            Bitmap URLPIC1 = null;
                             if (BitArray != null) {
                                 URLPIC = BitmapFactory.decodeByteArray(BitArray, 0, BitArray.length);
                             }
-                            controller.setShareMedia(new UMImage(MainActivity.GetInstance(), URLPIC));//设置分享图片内容
+                            URLPIC1 = zoomImage(URLPIC,70,70);
+                            controller.setShareMedia(new UMImage(MainActivity.GetInstance(), URLPIC1));//设置分享图片内容
                         }
                     }).start();
         }
+    }
+
+    public static Bitmap zoomImage(Bitmap bgimage, double newWidth,
+                                   double newHeight) {
+        // 获取这个图片的宽和高
+        float width = bgimage.getWidth();
+        float height = bgimage.getHeight();
+        // 创建操作图片用的matrix对象
+        Matrix matrix = new Matrix();
+        // 计算宽高缩放率
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // 缩放图片动作
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap bitmap = Bitmap.createBitmap(bgimage, 0, 0, (int) width,
+                (int) height, matrix, true);
+        return bitmap;
     }
 
     public static void UserAdvice() {
